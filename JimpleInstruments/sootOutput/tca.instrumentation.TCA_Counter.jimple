@@ -1,0 +1,119 @@
+public class tca.instrumentation.TCA_Counter extends java.lang.Object
+{
+    private static java.lang.Integer currentSize;
+    private static java.util.HashMap measurements;
+
+    static void <clinit>()
+    {
+        java.lang.Integer $r0;
+        java.util.HashMap $r1;
+
+        $r0 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(1);
+
+        <tca.instrumentation.TCA_Counter: java.lang.Integer currentSize> = $r0;
+
+        $r1 = new java.util.HashMap;
+
+        specialinvoke $r1.<java.util.HashMap: void <init>()>();
+
+        <tca.instrumentation.TCA_Counter: java.util.HashMap measurements> = $r1;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        tca.instrumentation.TCA_Counter r0;
+
+        r0 := @this: tca.instrumentation.TCA_Counter;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public static void setSize(int)
+    {
+        int i0;
+        java.lang.Integer $r0;
+
+        i0 := @parameter0: int;
+
+        $r0 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(i0);
+
+        <tca.instrumentation.TCA_Counter: java.lang.Integer currentSize> = $r0;
+
+        return;
+    }
+
+    public static synchronized void incrementCounter(java.lang.String)
+    {
+        java.lang.String r0;
+        java.util.HashMap r1;
+        java.lang.Integer $r2;
+        boolean $z0;
+        long $l0, $l1;
+        java.lang.Object $r4;
+        java.lang.Long r5, r6;
+
+        r0 := @parameter0: java.lang.String;
+
+        $r2 = <tca.instrumentation.TCA_Counter: java.lang.Integer currentSize>;
+
+        r1 = staticinvoke <tca.instrumentation.TCA_Counter: java.util.HashMap getCountersForSize(java.lang.Integer)>($r2);
+
+        r5 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>(0L);
+
+        $z0 = virtualinvoke r1.<java.util.HashMap: boolean containsKey(java.lang.Object)>(r0);
+
+        if $z0 == 0 goto label1;
+
+        $r4 = virtualinvoke r1.<java.util.HashMap: java.lang.Object remove(java.lang.Object)>(r0);
+
+        r5 = (java.lang.Long) $r4;
+
+     label1:
+        $l0 = virtualinvoke r5.<java.lang.Long: long longValue()>();
+
+        $l1 = $l0 + 1L;
+
+        r6 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l1);
+
+        virtualinvoke r1.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>(r0, r6);
+
+        return;
+    }
+
+    public static java.util.HashMap getCountersForSize(java.lang.Integer)
+    {
+        java.lang.Integer r0;
+        java.util.HashMap $r1, $r2, $r4, $r5, $r6;
+        boolean $z0;
+        java.lang.Object $r3;
+
+        r0 := @parameter0: java.lang.Integer;
+
+        $r1 = <tca.instrumentation.TCA_Counter: java.util.HashMap measurements>;
+
+        $z0 = virtualinvoke $r1.<java.util.HashMap: boolean containsKey(java.lang.Object)>(r0);
+
+        if $z0 != 0 goto label1;
+
+        $r6 = <tca.instrumentation.TCA_Counter: java.util.HashMap measurements>;
+
+        $r5 = new java.util.HashMap;
+
+        specialinvoke $r5.<java.util.HashMap: void <init>()>();
+
+        virtualinvoke $r6.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>(r0, $r5);
+
+     label1:
+        $r2 = <tca.instrumentation.TCA_Counter: java.util.HashMap measurements>;
+
+        $r3 = virtualinvoke $r2.<java.util.HashMap: java.lang.Object get(java.lang.Object)>(r0);
+
+        $r4 = (java.util.HashMap) $r3;
+
+        return $r4;
+    }
+}
