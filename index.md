@@ -11,7 +11,7 @@ The SID Analysis Toolbox project provides statically-informed dynamic (SID) anal
 The SID Analysis Toolbox project supports the following.
 
 - Loop Call Graph (LCG) generation
-- Targeted dynamic analysis instrumentation and driver skeleton generation
+- Targeted dynamic analysis instrumentation and skeleton driver generation
 - Empirical time complexity analysis (TCA)
 
 ## Getting Started
@@ -21,4 +21,4 @@ Ready to get started?
 2. Then check out the provided [tutorials](/SID/tutorials) to jump start your analysis
 
 ## Source Code
-Need additional resources?  Checkout the [Javadocs](/SID/javadoc/index.html) or grab a copy of the [source](https://github.com/EnSoftCorp/slicing-toolbox).
+Need additional resources?  Checkout the [Javadocs](/SID/javadoc/index.html) or grab a copy of the [source](https://github.com/benjholla/SID).
