@@ -1,0 +1,185 @@
+public class ruler.instrumentation.RULER_Timer extends java.lang.Object
+{
+    private static java.lang.Integer currentSize;
+    private static java.util.HashMap lastTimestamp;
+    private static java.util.HashMap measurements;
+
+    static void <clinit>()
+    {
+        java.lang.Integer $r0;
+        java.util.HashMap $r1, $r2;
+
+        $r0 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(1);
+
+        <ruler.instrumentation.RULER_Timer: java.lang.Integer currentSize> = $r0;
+
+        $r1 = new java.util.HashMap;
+
+        specialinvoke $r1.<java.util.HashMap: void <init>()>();
+
+        <ruler.instrumentation.RULER_Timer: java.util.HashMap lastTimestamp> = $r1;
+
+        $r2 = new java.util.HashMap;
+
+        specialinvoke $r2.<java.util.HashMap: void <init>()>();
+
+        <ruler.instrumentation.RULER_Timer: java.util.HashMap measurements> = $r2;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        ruler.instrumentation.RULER_Timer r0;
+
+        r0 := @this: ruler.instrumentation.RULER_Timer;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public static void setSize(int)
+    {
+        int i0;
+        java.lang.Integer $r0;
+
+        i0 := @parameter0: int;
+
+        $r0 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(i0);
+
+        <ruler.instrumentation.RULER_Timer: java.lang.Integer currentSize> = $r0;
+
+        return;
+    }
+
+    public static java.util.HashMap getCountersForSize(java.lang.Integer)
+    {
+        java.lang.Integer r0;
+        java.util.HashMap $r1, $r2, $r4, $r5, $r6;
+        boolean $z0;
+        java.lang.Object $r3;
+
+        r0 := @parameter0: java.lang.Integer;
+
+        $r1 = <ruler.instrumentation.RULER_Timer: java.util.HashMap measurements>;
+
+        $z0 = virtualinvoke $r1.<java.util.HashMap: boolean containsKey(java.lang.Object)>(r0);
+
+        if $z0 != 0 goto label1;
+
+        $r6 = <ruler.instrumentation.RULER_Timer: java.util.HashMap measurements>;
+
+        $r5 = new java.util.HashMap;
+
+        specialinvoke $r5.<java.util.HashMap: void <init>()>();
+
+        virtualinvoke $r6.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>(r0, $r5);
+
+     label1:
+        $r2 = <ruler.instrumentation.RULER_Timer: java.util.HashMap measurements>;
+
+        $r3 = virtualinvoke $r2.<java.util.HashMap: java.lang.Object get(java.lang.Object)>(r0);
+
+        $r4 = (java.util.HashMap) $r3;
+
+        return $r4;
+    }
+
+    public static synchronized void start(java.lang.String)
+    {
+        java.lang.String r0;
+        java.util.HashMap $r1, $r3;
+        long $l0;
+        java.lang.Long $r4;
+
+        r0 := @parameter0: java.lang.String;
+
+        $r1 = <ruler.instrumentation.RULER_Timer: java.util.HashMap lastTimestamp>;
+
+        virtualinvoke $r1.<java.util.HashMap: java.lang.Object remove(java.lang.Object)>(r0);
+
+        $r3 = <ruler.instrumentation.RULER_Timer: java.util.HashMap lastTimestamp>;
+
+        $l0 = staticinvoke <java.lang.System: long nanoTime()>();
+
+        $r4 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        virtualinvoke $r3.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>(r0, $r4);
+
+        return;
+    }
+
+    public static synchronized void stop(java.lang.String)
+    {
+        java.lang.String r0;
+        long l0, $l1, $l2;
+        java.util.HashMap r1, $r2, $r3, $r7, $r8, $r12, $r15, $r17;
+        boolean $z0, $z1;
+        java.lang.Object $r4, $r16;
+        java.lang.Long $r5, $r9, $r18;
+        java.lang.Integer $r6, $r11, $r14;
+
+        r0 := @parameter0: java.lang.String;
+
+        $r2 = <ruler.instrumentation.RULER_Timer: java.util.HashMap lastTimestamp>;
+
+        $z0 = virtualinvoke $r2.<java.util.HashMap: boolean containsKey(java.lang.Object)>(r0);
+
+        if $z0 == 0 goto label2;
+
+        $l1 = staticinvoke <java.lang.System: long nanoTime()>();
+
+        $r3 = <ruler.instrumentation.RULER_Timer: java.util.HashMap lastTimestamp>;
+
+        $r4 = virtualinvoke $r3.<java.util.HashMap: java.lang.Object remove(java.lang.Object)>(r0);
+
+        $r5 = (java.lang.Long) $r4;
+
+        $l2 = virtualinvoke $r5.<java.lang.Long: long longValue()>();
+
+        l0 = $l1 - $l2;
+
+        $r7 = <ruler.instrumentation.RULER_Timer: java.util.HashMap measurements>;
+
+        $r6 = <ruler.instrumentation.RULER_Timer: java.lang.Integer currentSize>;
+
+        $z1 = virtualinvoke $r7.<java.util.HashMap: boolean containsKey(java.lang.Object)>($r6);
+
+        if $z1 == 0 goto label1;
+
+        $r15 = <ruler.instrumentation.RULER_Timer: java.util.HashMap measurements>;
+
+        $r14 = <ruler.instrumentation.RULER_Timer: java.lang.Integer currentSize>;
+
+        $r16 = virtualinvoke $r15.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r14);
+
+        $r17 = (java.util.HashMap) $r16;
+
+        $r18 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>(l0);
+
+        virtualinvoke $r17.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>(r0, $r18);
+
+        goto label2;
+
+     label1:
+        $r8 = new java.util.HashMap;
+
+        specialinvoke $r8.<java.util.HashMap: void <init>()>();
+
+        r1 = $r8;
+
+        $r9 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>(l0);
+
+        virtualinvoke r1.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>(r0, $r9);
+
+        $r12 = <ruler.instrumentation.RULER_Timer: java.util.HashMap measurements>;
+
+        $r11 = <ruler.instrumentation.RULER_Timer: java.lang.Integer currentSize>;
+
+        virtualinvoke $r12.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r11, r1);
+
+     label2:
+        return;
+    }
+}

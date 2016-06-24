@@ -1,0 +1,329 @@
+public class ruler.instrumentation.RULER_Counter extends java.lang.Object
+{
+    public static java.lang.Integer currentSize;
+    private static java.util.HashMap measurements;
+
+    static void <clinit>()
+    {
+        java.lang.Integer $r0;
+        java.util.HashMap $r1;
+
+        $r0 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(1);
+
+        <ruler.instrumentation.RULER_Counter: java.lang.Integer currentSize> = $r0;
+
+        $r1 = new java.util.HashMap;
+
+        specialinvoke $r1.<java.util.HashMap: void <init>()>();
+
+        <ruler.instrumentation.RULER_Counter: java.util.HashMap measurements> = $r1;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        ruler.instrumentation.RULER_Counter r0;
+
+        r0 := @this: ruler.instrumentation.RULER_Counter;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public static void setSize(int)
+    {
+        int i0;
+        java.lang.Integer $r0;
+
+        i0 := @parameter0: int;
+
+        $r0 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(i0);
+
+        <ruler.instrumentation.RULER_Counter: java.lang.Integer currentSize> = $r0;
+
+        return;
+    }
+
+    public static synchronized void incrementCounter(java.lang.String)
+    {
+        java.lang.String r0;
+        java.util.HashMap r1;
+        java.lang.Integer $r2;
+        boolean $z0;
+        long $l0, $l1;
+        java.lang.Object $r4;
+        java.lang.Long r5, r6;
+
+        r0 := @parameter0: java.lang.String;
+
+        $r2 = <ruler.instrumentation.RULER_Counter: java.lang.Integer currentSize>;
+
+        r1 = staticinvoke <ruler.instrumentation.RULER_Counter: java.util.HashMap getCountersForSize(java.lang.Integer)>($r2);
+
+        r5 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>(0L);
+
+        $z0 = virtualinvoke r1.<java.util.HashMap: boolean containsKey(java.lang.Object)>(r0);
+
+        if $z0 == 0 goto label1;
+
+        $r4 = virtualinvoke r1.<java.util.HashMap: java.lang.Object remove(java.lang.Object)>(r0);
+
+        r5 = (java.lang.Long) $r4;
+
+     label1:
+        $l0 = virtualinvoke r5.<java.lang.Long: long longValue()>();
+
+        $l1 = $l0 + 1L;
+
+        r6 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l1);
+
+        virtualinvoke r1.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>(r0, r6);
+
+        return;
+    }
+
+    public static java.util.HashMap getCountersForSize(java.lang.Integer)
+    {
+        java.lang.Integer r0;
+        java.util.HashMap $r1, $r2, $r4, $r5, $r6;
+        boolean $z0;
+        java.lang.Object $r3;
+
+        r0 := @parameter0: java.lang.Integer;
+
+        $r1 = <ruler.instrumentation.RULER_Counter: java.util.HashMap measurements>;
+
+        $z0 = virtualinvoke $r1.<java.util.HashMap: boolean containsKey(java.lang.Object)>(r0);
+
+        if $z0 != 0 goto label1;
+
+        $r6 = <ruler.instrumentation.RULER_Counter: java.util.HashMap measurements>;
+
+        $r5 = new java.util.HashMap;
+
+        specialinvoke $r5.<java.util.HashMap: void <init>()>();
+
+        virtualinvoke $r6.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>(r0, $r5);
+
+     label1:
+        $r2 = <ruler.instrumentation.RULER_Counter: java.util.HashMap measurements>;
+
+        $r3 = virtualinvoke $r2.<java.util.HashMap: java.lang.Object get(java.lang.Object)>(r0);
+
+        $r4 = (java.util.HashMap) $r3;
+
+        return $r4;
+    }
+
+    public static java.util.HashMap getKeyMeasurements(java.lang.String)
+    {
+        java.lang.String r0;
+        java.util.HashMap r1, $r4, $r5, $r9, $r13;
+        java.util.Map$Entry r2;
+        java.util.Iterator r3;
+        java.util.Set $r6;
+        boolean $z0, $z1;
+        java.lang.Object $r7, $r8, $r10, $r12, $r14;
+        java.lang.Integer $r11;
+        java.lang.Long $r15;
+
+        r0 := @parameter0: java.lang.String;
+
+        $r4 = new java.util.HashMap;
+
+        specialinvoke $r4.<java.util.HashMap: void <init>()>();
+
+        r1 = $r4;
+
+        $r5 = <ruler.instrumentation.RULER_Counter: java.util.HashMap measurements>;
+
+        $r6 = virtualinvoke $r5.<java.util.HashMap: java.util.Set entrySet()>();
+
+        r3 = interfaceinvoke $r6.<java.util.Set: java.util.Iterator iterator()>();
+
+        goto label2;
+
+     label1:
+        $r7 = interfaceinvoke r3.<java.util.Iterator: java.lang.Object next()>();
+
+        r2 = (java.util.Map$Entry) $r7;
+
+        $r8 = interfaceinvoke r2.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r9 = (java.util.HashMap) $r8;
+
+        $z1 = virtualinvoke $r9.<java.util.HashMap: boolean containsKey(java.lang.Object)>(r0);
+
+        if $z1 == 0 goto label2;
+
+        $r10 = interfaceinvoke r2.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        $r11 = (java.lang.Integer) $r10;
+
+        $r12 = interfaceinvoke r2.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r13 = (java.util.HashMap) $r12;
+
+        $r14 = virtualinvoke $r13.<java.util.HashMap: java.lang.Object get(java.lang.Object)>(r0);
+
+        $r15 = (java.lang.Long) $r14;
+
+        virtualinvoke r1.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r11, $r15);
+
+     label2:
+        $z0 = interfaceinvoke r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label1;
+
+        return r1;
+    }
+
+    public static java.util.HashSet getKeys()
+    {
+        java.util.HashSet r0, $r5;
+        java.util.Map$Entry r1;
+        java.util.Iterator r2, r4;
+        java.lang.String r3;
+        java.util.HashMap $r6, $r10;
+        java.util.Set $r7, $r11;
+        boolean $z0, $z1;
+        java.lang.Object $r8, $r9, $r12;
+
+        $r5 = new java.util.HashSet;
+
+        specialinvoke $r5.<java.util.HashSet: void <init>()>();
+
+        r0 = $r5;
+
+        $r6 = <ruler.instrumentation.RULER_Counter: java.util.HashMap measurements>;
+
+        $r7 = virtualinvoke $r6.<java.util.HashMap: java.util.Set entrySet()>();
+
+        r2 = interfaceinvoke $r7.<java.util.Set: java.util.Iterator iterator()>();
+
+        goto label4;
+
+     label1:
+        $r8 = interfaceinvoke r2.<java.util.Iterator: java.lang.Object next()>();
+
+        r1 = (java.util.Map$Entry) $r8;
+
+        $r9 = interfaceinvoke r1.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r10 = (java.util.HashMap) $r9;
+
+        $r11 = virtualinvoke $r10.<java.util.HashMap: java.util.Set keySet()>();
+
+        r4 = interfaceinvoke $r11.<java.util.Set: java.util.Iterator iterator()>();
+
+        goto label3;
+
+     label2:
+        $r12 = interfaceinvoke r4.<java.util.Iterator: java.lang.Object next()>();
+
+        r3 = (java.lang.String) $r12;
+
+        virtualinvoke r0.<java.util.HashSet: boolean add(java.lang.Object)>(r3);
+
+     label3:
+        $z1 = interfaceinvoke r4.<java.util.Iterator: boolean hasNext()>();
+
+        if $z1 != 0 goto label2;
+
+     label4:
+        $z0 = interfaceinvoke r2.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label1;
+
+        return r0;
+    }
+
+    public static void saveKeyMeasurements(java.io.File) throws java.io.IOException
+    {
+        java.io.File r0;
+        java.io.FileWriter r1, $r6;
+        java.lang.String r2, $r13, $r21;
+        java.util.Iterator r3, r5;
+        java.util.Map$Entry r4;
+        java.util.HashSet $r7;
+        boolean $z0, $z1;
+        java.lang.Object $r8, $r11, $r15, $r18;
+        java.util.HashMap $r9;
+        java.util.Set $r10;
+        java.lang.StringBuilder $r12, $r14, $r16, $r17, $r19, $r20;
+
+        r0 := @parameter0: java.io.File;
+
+        $r6 = new java.io.FileWriter;
+
+        specialinvoke $r6.<java.io.FileWriter: void <init>(java.io.File)>(r0);
+
+        r1 = $r6;
+
+        virtualinvoke r1.<java.io.FileWriter: void write(java.lang.String)>("KEY,WORKLOAD_SIZE,COUNT\n");
+
+        $r7 = staticinvoke <ruler.instrumentation.RULER_Counter: java.util.HashSet getKeys()>();
+
+        r3 = virtualinvoke $r7.<java.util.HashSet: java.util.Iterator iterator()>();
+
+        goto label4;
+
+     label1:
+        $r8 = interfaceinvoke r3.<java.util.Iterator: java.lang.Object next()>();
+
+        r2 = (java.lang.String) $r8;
+
+        $r9 = staticinvoke <ruler.instrumentation.RULER_Counter: java.util.HashMap getKeyMeasurements(java.lang.String)>(r2);
+
+        $r10 = virtualinvoke $r9.<java.util.HashMap: java.util.Set entrySet()>();
+
+        r5 = interfaceinvoke $r10.<java.util.Set: java.util.Iterator iterator()>();
+
+        goto label3;
+
+     label2:
+        $r11 = interfaceinvoke r5.<java.util.Iterator: java.lang.Object next()>();
+
+        r4 = (java.util.Map$Entry) $r11;
+
+        $r12 = new java.lang.StringBuilder;
+
+        $r13 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>(r2);
+
+        specialinvoke $r12.<java.lang.StringBuilder: void <init>(java.lang.String)>($r13);
+
+        $r14 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",");
+
+        $r15 = interfaceinvoke r4.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        $r16 = virtualinvoke $r14.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r15);
+
+        $r17 = virtualinvoke $r16.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",");
+
+        $r18 = interfaceinvoke r4.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r19 = virtualinvoke $r17.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r18);
+
+        $r20 = virtualinvoke $r19.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\n");
+
+        $r21 = virtualinvoke $r20.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r1.<java.io.FileWriter: void write(java.lang.String)>($r21);
+
+     label3:
+        $z1 = interfaceinvoke r5.<java.util.Iterator: boolean hasNext()>();
+
+        if $z1 != 0 goto label2;
+
+     label4:
+        $z0 = interfaceinvoke r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label1;
+
+        virtualinvoke r1.<java.io.FileWriter: void close()>();
+
+        return;
+    }
+}
