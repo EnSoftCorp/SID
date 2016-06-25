@@ -32,7 +32,7 @@ TCA_MAIN_METHODS
 		}
 		t.stop(); // I feel dirty...:(
 		
-		File outputFile = new File("counters.csv");
+		File outputFile = new File("measurements.csv");
 		System.out.println("Saving measurements to " + outputFile.getAbsolutePath());
 		try {
 			TCA_Counter.saveKeyMeasurements(outputFile);

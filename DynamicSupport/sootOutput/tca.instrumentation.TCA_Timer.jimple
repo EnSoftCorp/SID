@@ -1,183 +1,196 @@
-public class tca.instrumentation.TCA_Timer extends java.lang.Object
+public class tca.instrumentation.TCA_Timer extends tca.instrumentation.MeasurementProbe
 {
-    private static java.lang.Integer currentSize;
-    private static java.util.HashMap lastTimestamp;
-    private static java.util.HashMap measurements;
+    private static tca.instrumentation.TCA_Timer instance;
+    private java.util.HashMap lastTimestamp;
 
     static void <clinit>()
     {
-        java.lang.Integer $r0;
-        java.util.HashMap $r1, $r2;
+        <tca.instrumentation.TCA_Timer: tca.instrumentation.TCA_Timer instance> = null;
 
-        $r0 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(1);
+        return;
+    }
 
-        <tca.instrumentation.TCA_Timer: java.lang.Integer currentSize> = $r0;
+    private void <init>()
+    {
+        tca.instrumentation.TCA_Timer r0;
+        java.util.HashMap $r1;
+
+        r0 := @this: tca.instrumentation.TCA_Timer;
+
+        specialinvoke r0.<tca.instrumentation.MeasurementProbe: void <init>()>();
 
         $r1 = new java.util.HashMap;
 
         specialinvoke $r1.<java.util.HashMap: void <init>()>();
 
-        <tca.instrumentation.TCA_Timer: java.util.HashMap lastTimestamp> = $r1;
-
-        $r2 = new java.util.HashMap;
-
-        specialinvoke $r2.<java.util.HashMap: void <init>()>();
-
-        <tca.instrumentation.TCA_Timer: java.util.HashMap measurements> = $r2;
+        r0.<tca.instrumentation.TCA_Timer: java.util.HashMap lastTimestamp> = $r1;
 
         return;
     }
 
-    public void <init>()
+    public static tca.instrumentation.TCA_Timer getInstance()
+    {
+        tca.instrumentation.TCA_Timer $r0, $r1, $r2;
+
+        $r0 = <tca.instrumentation.TCA_Timer: tca.instrumentation.TCA_Timer instance>;
+
+        if $r0 != null goto label1;
+
+        $r2 = new tca.instrumentation.TCA_Timer;
+
+        specialinvoke $r2.<tca.instrumentation.TCA_Timer: void <init>()>();
+
+        <tca.instrumentation.TCA_Timer: tca.instrumentation.TCA_Timer instance> = $r2;
+
+     label1:
+        $r1 = <tca.instrumentation.TCA_Timer: tca.instrumentation.TCA_Timer instance>;
+
+        return $r1;
+    }
+
+    public void setSize(int)
     {
         tca.instrumentation.TCA_Timer r0;
+        int i0;
+        java.lang.Integer $r1;
 
         r0 := @this: tca.instrumentation.TCA_Timer;
 
-        specialinvoke r0.<java.lang.Object: void <init>()>();
-
-        return;
-    }
-
-    public static void setSize(int)
-    {
-        int i0;
-        java.lang.Integer $r0;
-
         i0 := @parameter0: int;
 
-        $r0 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(i0);
+        $r1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(i0);
 
-        <tca.instrumentation.TCA_Timer: java.lang.Integer currentSize> = $r0;
+        r0.<tca.instrumentation.TCA_Timer: java.lang.Integer currentSize> = $r1;
 
         return;
     }
 
-    public static java.util.HashMap getCountersForSize(java.lang.Integer)
+    public synchronized void start(java.lang.String)
     {
-        java.lang.Integer r0;
-        java.util.HashMap $r1, $r2, $r4, $r5, $r6;
-        boolean $z0;
-        java.lang.Object $r3;
-
-        r0 := @parameter0: java.lang.Integer;
-
-        $r1 = <tca.instrumentation.TCA_Timer: java.util.HashMap measurements>;
-
-        $z0 = virtualinvoke $r1.<java.util.HashMap: boolean containsKey(java.lang.Object)>(r0);
-
-        if $z0 != 0 goto label1;
-
-        $r6 = <tca.instrumentation.TCA_Timer: java.util.HashMap measurements>;
-
-        $r5 = new java.util.HashMap;
-
-        specialinvoke $r5.<java.util.HashMap: void <init>()>();
-
-        virtualinvoke $r6.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>(r0, $r5);
-
-     label1:
-        $r2 = <tca.instrumentation.TCA_Timer: java.util.HashMap measurements>;
-
-        $r3 = virtualinvoke $r2.<java.util.HashMap: java.lang.Object get(java.lang.Object)>(r0);
-
-        $r4 = (java.util.HashMap) $r3;
-
-        return $r4;
-    }
-
-    public static synchronized void start(java.lang.String)
-    {
-        java.lang.String r0;
-        java.util.HashMap $r1, $r3;
+        tca.instrumentation.TCA_Timer r0;
+        java.lang.String r1;
+        java.util.HashMap $r2, $r4;
         long $l0;
-        java.lang.Long $r4;
+        java.lang.Long $r5;
 
-        r0 := @parameter0: java.lang.String;
+        r0 := @this: tca.instrumentation.TCA_Timer;
 
-        $r1 = <tca.instrumentation.TCA_Timer: java.util.HashMap lastTimestamp>;
+        r1 := @parameter0: java.lang.String;
 
-        virtualinvoke $r1.<java.util.HashMap: java.lang.Object remove(java.lang.Object)>(r0);
+        $r2 = r0.<tca.instrumentation.TCA_Timer: java.util.HashMap lastTimestamp>;
 
-        $r3 = <tca.instrumentation.TCA_Timer: java.util.HashMap lastTimestamp>;
+        virtualinvoke $r2.<java.util.HashMap: java.lang.Object remove(java.lang.Object)>(r1);
+
+        $r4 = r0.<tca.instrumentation.TCA_Timer: java.util.HashMap lastTimestamp>;
 
         $l0 = staticinvoke <java.lang.System: long nanoTime()>();
 
-        $r4 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+        $r5 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
 
-        virtualinvoke $r3.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>(r0, $r4);
+        virtualinvoke $r4.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>(r1, $r5);
 
         return;
     }
 
-    public static synchronized void stop(java.lang.String)
+    public synchronized void stop(java.lang.String)
     {
-        java.lang.String r0;
+        tca.instrumentation.TCA_Timer r0;
+        java.lang.String r1;
         long l0, $l1, $l2;
-        java.util.HashMap r1, $r2, $r3, $r7, $r8, $r12, $r15, $r17;
+        java.util.HashMap r2, $r3, $r4, $r8, $r9, $r13, $r16, $r18;
         boolean $z0, $z1;
-        java.lang.Object $r4, $r16;
-        java.lang.Long $r5, $r9, $r18;
-        java.lang.Integer $r6, $r11, $r14;
+        java.lang.Object $r5, $r17;
+        java.lang.Long $r6, $r10, $r19;
+        java.lang.Integer $r7, $r12, $r15;
 
-        r0 := @parameter0: java.lang.String;
+        r0 := @this: tca.instrumentation.TCA_Timer;
 
-        $r2 = <tca.instrumentation.TCA_Timer: java.util.HashMap lastTimestamp>;
+        r1 := @parameter0: java.lang.String;
 
-        $z0 = virtualinvoke $r2.<java.util.HashMap: boolean containsKey(java.lang.Object)>(r0);
+        $r3 = r0.<tca.instrumentation.TCA_Timer: java.util.HashMap lastTimestamp>;
+
+        $z0 = virtualinvoke $r3.<java.util.HashMap: boolean containsKey(java.lang.Object)>(r1);
 
         if $z0 == 0 goto label2;
 
         $l1 = staticinvoke <java.lang.System: long nanoTime()>();
 
-        $r3 = <tca.instrumentation.TCA_Timer: java.util.HashMap lastTimestamp>;
+        $r4 = r0.<tca.instrumentation.TCA_Timer: java.util.HashMap lastTimestamp>;
 
-        $r4 = virtualinvoke $r3.<java.util.HashMap: java.lang.Object remove(java.lang.Object)>(r0);
+        $r5 = virtualinvoke $r4.<java.util.HashMap: java.lang.Object remove(java.lang.Object)>(r1);
 
-        $r5 = (java.lang.Long) $r4;
+        $r6 = (java.lang.Long) $r5;
 
-        $l2 = virtualinvoke $r5.<java.lang.Long: long longValue()>();
+        $l2 = virtualinvoke $r6.<java.lang.Long: long longValue()>();
 
         l0 = $l1 - $l2;
 
-        $r7 = <tca.instrumentation.TCA_Timer: java.util.HashMap measurements>;
+        $r8 = r0.<tca.instrumentation.TCA_Timer: java.util.HashMap measurements>;
 
-        $r6 = <tca.instrumentation.TCA_Timer: java.lang.Integer currentSize>;
+        $r7 = r0.<tca.instrumentation.TCA_Timer: java.lang.Integer currentSize>;
 
-        $z1 = virtualinvoke $r7.<java.util.HashMap: boolean containsKey(java.lang.Object)>($r6);
+        $z1 = virtualinvoke $r8.<java.util.HashMap: boolean containsKey(java.lang.Object)>($r7);
 
         if $z1 == 0 goto label1;
 
-        $r15 = <tca.instrumentation.TCA_Timer: java.util.HashMap measurements>;
+        $r16 = r0.<tca.instrumentation.TCA_Timer: java.util.HashMap measurements>;
 
-        $r14 = <tca.instrumentation.TCA_Timer: java.lang.Integer currentSize>;
+        $r15 = r0.<tca.instrumentation.TCA_Timer: java.lang.Integer currentSize>;
 
-        $r16 = virtualinvoke $r15.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r14);
+        $r17 = virtualinvoke $r16.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r15);
 
-        $r17 = (java.util.HashMap) $r16;
+        $r18 = (java.util.HashMap) $r17;
 
-        $r18 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>(l0);
+        $r19 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>(l0);
 
-        virtualinvoke $r17.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>(r0, $r18);
+        virtualinvoke $r18.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>(r1, $r19);
 
         goto label2;
 
      label1:
-        $r8 = new java.util.HashMap;
+        $r9 = new java.util.HashMap;
 
-        specialinvoke $r8.<java.util.HashMap: void <init>()>();
+        specialinvoke $r9.<java.util.HashMap: void <init>()>();
 
-        r1 = $r8;
+        r2 = $r9;
 
-        $r9 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>(l0);
+        $r10 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>(l0);
 
-        virtualinvoke r1.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>(r0, $r9);
+        virtualinvoke r2.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>(r1, $r10);
 
-        $r12 = <tca.instrumentation.TCA_Timer: java.util.HashMap measurements>;
+        $r13 = r0.<tca.instrumentation.TCA_Timer: java.util.HashMap measurements>;
 
-        $r11 = <tca.instrumentation.TCA_Timer: java.lang.Integer currentSize>;
+        $r12 = r0.<tca.instrumentation.TCA_Timer: java.lang.Integer currentSize>;
 
-        virtualinvoke $r12.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r11, r1);
+        virtualinvoke $r13.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r12, r2);
+
+     label2:
+        return;
+    }
+
+    public static synchronized void probe(java.lang.String)
+    {
+        java.lang.String r0;
+        tca.instrumentation.TCA_Timer r1;
+        java.util.HashMap $r2;
+        boolean $z0;
+
+        r0 := @parameter0: java.lang.String;
+
+        r1 = staticinvoke <tca.instrumentation.TCA_Timer: tca.instrumentation.TCA_Timer getInstance()>();
+
+        $r2 = r1.<tca.instrumentation.TCA_Timer: java.util.HashMap lastTimestamp>;
+
+        $z0 = virtualinvoke $r2.<java.util.HashMap: boolean containsKey(java.lang.Object)>(r0);
+
+        if $z0 == 0 goto label1;
+
+        virtualinvoke r1.<tca.instrumentation.TCA_Timer: void stop(java.lang.String)>(r0);
+
+        goto label2;
+
+     label1:
+        virtualinvoke r1.<tca.instrumentation.TCA_Timer: void start(java.lang.String)>(r0);
 
      label2:
         return;

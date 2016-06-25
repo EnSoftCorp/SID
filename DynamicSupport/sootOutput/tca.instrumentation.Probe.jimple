@@ -1,0 +1,3 @@
+public interface  tca.instrumentation.Probe extends java.lang.Object
+{
+}

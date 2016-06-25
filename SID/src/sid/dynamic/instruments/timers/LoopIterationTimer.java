@@ -1,4 +1,4 @@
-package sid.dynamic.instruments.counters;
+package sid.dynamic.instruments.timers;
 
 import java.io.IOException;
 
@@ -14,7 +14,7 @@ import com.ensoftcorp.atlas.core.xcsg.XCSG;
 
 import sid.statics.LoopAnalyzer;
 
-public class LoopIterationCounter extends Counter {
+public class LoopIterationTimer extends Timer {
 	
 	private String measurementKeyName;
 	
@@ -25,7 +25,7 @@ public class LoopIterationCounter extends Counter {
 	 * @param graphElement
 	 * @param logDirectory
 	 */
-	public LoopIterationCounter(IProject project, GraphElement loopHeader) {
+	public LoopIterationTimer(IProject project, GraphElement loopHeader) {
 		super(project, loopHeader);
 		measurementKeyName = getQualifiedLabelName(loopHeader);
 	}
@@ -41,7 +41,7 @@ public class LoopIterationCounter extends Counter {
 		SourceCorrespondence sc = (SourceCorrespondence) loopHeader.getAttr(Node.SC);
 		try {
 			// insert just before the loop header
-			insert(sc.sourceFile, sc.offset, "\nstaticinvoke <tca.instrumentation.TCA_Counter: void probe(java.lang.String)>(\"" + measurementKeyName + "\");\n");
+			insert(sc.sourceFile, sc.offset, "\nstaticinvoke <tca.instrumentation.TCA_Timer: void probe(java.lang.String)>(\"" + measurementKeyName + "\");\n");
 		} catch (IOException | CoreException e) {
 			return false;
 		}

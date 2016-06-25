@@ -84,6 +84,10 @@ public class Instrumentation {
 		try {
 			Log.info("Instrumenting all loop headers for " + project.getName() + " for the given context...");
 			Q allLoopHeaders = context.contained().nodesTaggedWithAny(LoopAnalyzer.CFGNode.LOOP_HEADER);
+			if(allLoopHeaders.eval().nodes().isEmpty()){
+				LoopAnalyzer.analyzeLoops();
+				allLoopHeaders = context.contained().nodesTaggedWithAny(LoopAnalyzer.CFGNode.LOOP_HEADER);
+			}
 			Q exceptionalLoopHeaders = allLoopHeaders.contained().nodesTaggedWithAny(XCSG.CaughtValue).containers().nodesTaggedWithAny(LoopAnalyzer.CFGNode.LOOP_HEADER);;
 			Q safeLoopHeadersToInstrument = allLoopHeaders.difference(exceptionalLoopHeaders);
 			for(GraphElement loopHeader : safeLoopHeadersToInstrument.eval().nodes()){
