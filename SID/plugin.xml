@@ -3,13 +3,13 @@
 <plugin>
     <extension point="org.eclipse.ui.handlers">
 		<handler commandId="sid.dynamic.cloneProjectCommand"
-				 class="sid.dynamic.ui.handlers.CloneProjectHandler">
+				 class="sid.handlers.CloneProjectHandler">
 		</handler>
 		<handler commandId="sid.dynamic.instrumentAllLoopHeadersCommand"
-				 class="sid.dynamic.ui.handlers.InstrumentAllLoopHeadersProjectHandler">
+				 class="sid.handlers.InstrumentAllLoopHeadersProjectHandler">
 		</handler>
 		<handler commandId="sid.dynamic.createDriverProjectCommand"
-				 class="sid.dynamic.ui.handlers.CreateDriverProjectHandler">
+				 class="sid.handlers.CreateDriverProjectHandler">
 		</handler>
 	</extension>
 	

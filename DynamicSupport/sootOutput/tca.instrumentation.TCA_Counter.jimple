@@ -1,4 +1,4 @@
-public class ruler.instrumentation.RULER_Counter extends java.lang.Object
+public class tca.instrumentation.TCA_Counter extends java.lang.Object
 {
     public static java.lang.Integer currentSize;
     private static java.util.HashMap measurements;
@@ -10,22 +10,22 @@ public class ruler.instrumentation.RULER_Counter extends java.lang.Object
 
         $r0 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(1);
 
-        <ruler.instrumentation.RULER_Counter: java.lang.Integer currentSize> = $r0;
+        <tca.instrumentation.TCA_Counter: java.lang.Integer currentSize> = $r0;
 
         $r1 = new java.util.HashMap;
 
         specialinvoke $r1.<java.util.HashMap: void <init>()>();
 
-        <ruler.instrumentation.RULER_Counter: java.util.HashMap measurements> = $r1;
+        <tca.instrumentation.TCA_Counter: java.util.HashMap measurements> = $r1;
 
         return;
     }
 
     public void <init>()
     {
-        ruler.instrumentation.RULER_Counter r0;
+        tca.instrumentation.TCA_Counter r0;
 
-        r0 := @this: ruler.instrumentation.RULER_Counter;
+        r0 := @this: tca.instrumentation.TCA_Counter;
 
         specialinvoke r0.<java.lang.Object: void <init>()>();
 
@@ -41,7 +41,7 @@ public class ruler.instrumentation.RULER_Counter extends java.lang.Object
 
         $r0 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(i0);
 
-        <ruler.instrumentation.RULER_Counter: java.lang.Integer currentSize> = $r0;
+        <tca.instrumentation.TCA_Counter: java.lang.Integer currentSize> = $r0;
 
         return;
     }
@@ -58,9 +58,9 @@ public class ruler.instrumentation.RULER_Counter extends java.lang.Object
 
         r0 := @parameter0: java.lang.String;
 
-        $r2 = <ruler.instrumentation.RULER_Counter: java.lang.Integer currentSize>;
+        $r2 = <tca.instrumentation.TCA_Counter: java.lang.Integer currentSize>;
 
-        r1 = staticinvoke <ruler.instrumentation.RULER_Counter: java.util.HashMap getCountersForSize(java.lang.Integer)>($r2);
+        r1 = staticinvoke <tca.instrumentation.TCA_Counter: java.util.HashMap getCountersForSize(java.lang.Integer)>($r2);
 
         r5 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>(0L);
 
@@ -93,13 +93,13 @@ public class ruler.instrumentation.RULER_Counter extends java.lang.Object
 
         r0 := @parameter0: java.lang.Integer;
 
-        $r1 = <ruler.instrumentation.RULER_Counter: java.util.HashMap measurements>;
+        $r1 = <tca.instrumentation.TCA_Counter: java.util.HashMap measurements>;
 
         $z0 = virtualinvoke $r1.<java.util.HashMap: boolean containsKey(java.lang.Object)>(r0);
 
         if $z0 != 0 goto label1;
 
-        $r6 = <ruler.instrumentation.RULER_Counter: java.util.HashMap measurements>;
+        $r6 = <tca.instrumentation.TCA_Counter: java.util.HashMap measurements>;
 
         $r5 = new java.util.HashMap;
 
@@ -108,7 +108,7 @@ public class ruler.instrumentation.RULER_Counter extends java.lang.Object
         virtualinvoke $r6.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>(r0, $r5);
 
      label1:
-        $r2 = <ruler.instrumentation.RULER_Counter: java.util.HashMap measurements>;
+        $r2 = <tca.instrumentation.TCA_Counter: java.util.HashMap measurements>;
 
         $r3 = virtualinvoke $r2.<java.util.HashMap: java.lang.Object get(java.lang.Object)>(r0);
 
@@ -137,7 +137,7 @@ public class ruler.instrumentation.RULER_Counter extends java.lang.Object
 
         r1 = $r4;
 
-        $r5 = <ruler.instrumentation.RULER_Counter: java.util.HashMap measurements>;
+        $r5 = <tca.instrumentation.TCA_Counter: java.util.HashMap measurements>;
 
         $r6 = virtualinvoke $r5.<java.util.HashMap: java.util.Set entrySet()>();
 
@@ -197,7 +197,7 @@ public class ruler.instrumentation.RULER_Counter extends java.lang.Object
 
         r0 = $r5;
 
-        $r6 = <ruler.instrumentation.RULER_Counter: java.util.HashMap measurements>;
+        $r6 = <tca.instrumentation.TCA_Counter: java.util.HashMap measurements>;
 
         $r7 = virtualinvoke $r6.<java.util.HashMap: java.util.Set entrySet()>();
 
@@ -264,7 +264,7 @@ public class ruler.instrumentation.RULER_Counter extends java.lang.Object
 
         virtualinvoke r1.<java.io.FileWriter: void write(java.lang.String)>("KEY,WORKLOAD_SIZE,COUNT\n");
 
-        $r7 = staticinvoke <ruler.instrumentation.RULER_Counter: java.util.HashSet getKeys()>();
+        $r7 = staticinvoke <tca.instrumentation.TCA_Counter: java.util.HashSet getKeys()>();
 
         r3 = virtualinvoke $r7.<java.util.HashSet: java.util.Iterator iterator()>();
 
@@ -275,7 +275,7 @@ public class ruler.instrumentation.RULER_Counter extends java.lang.Object
 
         r2 = (java.lang.String) $r8;
 
-        $r9 = staticinvoke <ruler.instrumentation.RULER_Counter: java.util.HashMap getKeyMeasurements(java.lang.String)>(r2);
+        $r9 = staticinvoke <tca.instrumentation.TCA_Counter: java.util.HashMap getKeyMeasurements(java.lang.String)>(r2);
 
         $r10 = virtualinvoke $r9.<java.util.HashMap: java.util.Set entrySet()>();
 

@@ -1,11 +1,11 @@
-public class ruler.instrumentation.RULER_Print extends java.lang.Object
+public class tca.instrumentation.TCA_Print extends java.lang.Object
 {
 
     public void <init>()
     {
-        ruler.instrumentation.RULER_Print r0;
+        tca.instrumentation.TCA_Print r0;
 
-        r0 := @this: ruler.instrumentation.RULER_Print;
+        r0 := @this: tca.instrumentation.TCA_Print;
 
         specialinvoke r0.<java.lang.Object: void <init>()>();
 
@@ -33,7 +33,7 @@ public class ruler.instrumentation.RULER_Print extends java.lang.Object
 
         $r48 = <java.lang.System: java.io.PrintStream out>;
 
-        virtualinvoke $r48.<java.io.PrintStream: void println(java.lang.String)>("RULER: null");
+        virtualinvoke $r48.<java.io.PrintStream: void println(java.lang.String)>("TCA: null");
 
         goto label8;
 
@@ -48,7 +48,7 @@ public class ruler.instrumentation.RULER_Print extends java.lang.Object
 
         $r41 = new java.lang.StringBuilder;
 
-        specialinvoke $r41.<java.lang.StringBuilder: void <init>(java.lang.String)>("RULER: int[");
+        specialinvoke $r41.<java.lang.StringBuilder: void <init>(java.lang.String)>("TCA: int[");
 
         $i5 = lengthof r49;
 
@@ -77,7 +77,7 @@ public class ruler.instrumentation.RULER_Print extends java.lang.Object
 
         $r34 = new java.lang.StringBuilder;
 
-        specialinvoke $r34.<java.lang.StringBuilder: void <init>(java.lang.String)>("RULER: short[");
+        specialinvoke $r34.<java.lang.StringBuilder: void <init>(java.lang.String)>("TCA: short[");
 
         $i4 = lengthof r50;
 
@@ -106,7 +106,7 @@ public class ruler.instrumentation.RULER_Print extends java.lang.Object
 
         $r27 = new java.lang.StringBuilder;
 
-        specialinvoke $r27.<java.lang.StringBuilder: void <init>(java.lang.String)>("RULER: double[");
+        specialinvoke $r27.<java.lang.StringBuilder: void <init>(java.lang.String)>("TCA: double[");
 
         $i3 = lengthof r51;
 
@@ -135,7 +135,7 @@ public class ruler.instrumentation.RULER_Print extends java.lang.Object
 
         $r20 = new java.lang.StringBuilder;
 
-        specialinvoke $r20.<java.lang.StringBuilder: void <init>(java.lang.String)>("RULER: float[");
+        specialinvoke $r20.<java.lang.StringBuilder: void <init>(java.lang.String)>("TCA: float[");
 
         $i2 = lengthof r52;
 
@@ -164,7 +164,7 @@ public class ruler.instrumentation.RULER_Print extends java.lang.Object
 
         $r13 = new java.lang.StringBuilder;
 
-        specialinvoke $r13.<java.lang.StringBuilder: void <init>(java.lang.String)>("RULER: byte[");
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>(java.lang.String)>("TCA: byte[");
 
         $i1 = lengthof r53;
 
@@ -195,7 +195,7 @@ public class ruler.instrumentation.RULER_Print extends java.lang.Object
 
         $r6 = new java.lang.StringBuilder;
 
-        specialinvoke $r6.<java.lang.StringBuilder: void <init>(java.lang.String)>("RULER: boolean[");
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>(java.lang.String)>("TCA: boolean[");
 
         $i0 = lengthof r54;
 
@@ -218,7 +218,7 @@ public class ruler.instrumentation.RULER_Print extends java.lang.Object
 
         $r1 = new java.lang.StringBuilder;
 
-        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>("RULER: ");
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>("TCA: ");
 
         $r3 = virtualinvoke r0.<java.lang.Object: java.lang.String toString()>();
 
