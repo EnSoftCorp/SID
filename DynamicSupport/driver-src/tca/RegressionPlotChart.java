@@ -51,7 +51,7 @@ public class RegressionPlotChart extends Chart {
 		
 		JFreeChart chart = ChartFactory.createScatterPlot(title + ", R2=" + decimalFormat.format(r2), // title
 														  "Log(Workload Size)", // x-axis label
-														  "Log(Iteration Count)",  // y-axis label
+														  "Log(Measurement)",  // y-axis label
 														  dataset, // data
 														  PlotOrientation.VERTICAL, // orientation
 														  showLegend, // create legend
