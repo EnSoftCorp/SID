@@ -218,33 +218,6 @@ public class CreateDriverProjectHandler extends AbstractHandler {
 		}
 	}
 	
-//	/**
-//	 * Creates a string representing a source code callsite to the given method with an Object array for parameters
-//	 * @param method
-//	 * @return
-//	 */
-//	public static String createMethodDriverCallsite(GraphElement method){
-//		String result = getQualifiedName(method);
-//		result += "(";
-//		HashMap<Integer,GraphElement> parameterTypes = new HashMap<Integer,GraphElement>();
-//		Q containsEdges = Common.universe().edgesTaggedWithAny(XCSG.Contains);
-//		Q typeOfEdges = Common.universe().edgesTaggedWithAny(XCSG.TypeOf);
-//		Q params = containsEdges.forwardStep(Common.toQ(method)).nodesTaggedWithAny(XCSG.Parameter);
-//		for(GraphElement param : params.eval().nodes()){
-//			int paramIndex = (Integer) param.getAttr(XCSG.parameterIndex) + 1;
-//			GraphElement paramType = typeOfEdges.successors(Common.toQ(param)).eval().nodes().getFirst();
-//			parameterTypes.put(paramIndex, paramType);
-//		}
-//		String prefix = "";
-//		for(int i=1; i<=parameterTypes.size(); i++){
-//			GraphElement paramType = parameterTypes.get(i);
-//			result += prefix + "(" + getQualifiedName(paramType) + ") " + "parameters[" + (i-1) + "]";
-//			prefix = ", ";
-//		}
-//		result += ");";
-//		return result;
-//	}
-	
 	public static String createMainMethodCallsite(GraphElement method){
 		return getQualifiedName(method) + "(new String[]{});";
 	}

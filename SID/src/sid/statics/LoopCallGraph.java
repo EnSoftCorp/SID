@@ -21,6 +21,7 @@ import com.ensoftcorp.atlas.core.highlight.Highlighter.ConflictStrategy;
 import com.ensoftcorp.atlas.core.log.Log;
 import com.ensoftcorp.atlas.core.query.Q;
 import com.ensoftcorp.atlas.core.script.Common;
+import com.ensoftcorp.atlas.core.script.StyledResult;
 import com.ensoftcorp.atlas.core.xcsg.XCSG;
 import com.ensoftcorp.open.commons.analysis.utils.StandardQueries;
 import com.ensoftcorp.open.commons.utils.DisplayUtils;
@@ -396,5 +397,47 @@ public class LoopCallGraph {
 		}
 		// Retrieve the call edges from the resultant graph and color them with RED
 		return results.edgesTaggedWithAll(XCSG.Call);
+	}
+
+	/**
+	 * Runs the loop analysis
+	 * @return
+	 */
+	public static LoopCallGraph getLoopCallGraph(){
+		UndoLoopAnalyzer.undoLoopAnalyzer(); // clear out any previous analysis
+		LoopAnalyzer.analyzeLoops();
+		LoopCallGraph lcg = new LoopCallGraph();
+		return lcg;
+	}
+
+	/**
+	 * Returns a resolved and highlighted loop call graph for a given entry point method
+	 * @param method
+	 * @return
+	 */
+	public static StyledResult getMethodLCG(GraphElement method, LoopCallGraph lcg){
+		return getMethodSubLevelLCG(method, lcg, 0);
+	}
+	
+	/**
+	 * Returns a specified level within the loop call graph for a given entry point method
+	 * @param method
+	 * @param lcg
+	 * @param level
+	 * @return
+	 */
+	public static StyledResult getMethodSubLevelLCG(GraphElement method, LoopCallGraph lcg, int level){
+		Q callGraph = Common.universe().edgesTaggedWithAny(XCSG.Call);
+		Q children = Common.toQ(method);
+		for(int i=0; i<level; i++){
+//			children = lcg.getCallEdgesFromWithinLoops().successors(children); // step along looping edges (yellow edges)
+			children = callGraph.successors(children); // step along the call graph
+		}
+		Q methodsCallGraph = callGraph.forward(children);
+		Q methodSubLevelLCG = methodsCallGraph.intersection(lcg.lcg());
+		Highlighter h = lcg.colorMethodsCalledFromWithinLoops();
+		methodSubLevelLCG = methodSubLevelLCG.union(callGraph.forwardStep(Common.toQ(method))); //TODO: fix nasty hack...for bad lcg level
+		StyledResult result = new StyledResult(Common.resolve(null, methodSubLevelLCG), h);
+		return result;
 	}
 }

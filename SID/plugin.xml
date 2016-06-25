@@ -11,30 +11,47 @@
 		<handler commandId="sid.dynamic.createDriverProjectCommand"
 				 class="sid.handlers.CreateDriverProjectHandler">
 		</handler>
+		<handler commandId="sid.dynamic.createMethodDriverProjectCommand"
+				 class="sid.handlers.CreateMethodDriverProjectHandler">
+		</handler>
 	</extension>
 	
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:org.eclipse.jdt.ui.PackageExplorer?after=additions">
-			<menu id="sid.dynamic.menu" 
+			<menu id="sid.dynamic.explorer.menu" 
 				  label="SID" />
 		</menuContribution>
-		<menuContribution locationURI="popup:sid.dynamic.menu?after=additions">
+		<menuContribution locationURI="popup:sid.dynamic.explorer.menu?after=additions">
 			<command commandId="sid.dynamic.cloneProjectCommand" 
 					 icon="icons/clone.png" 
 					 label="Clone Project (with instruments)" 
 					 style="push" />
 		</menuContribution>
-		<menuContribution locationURI="popup:sid.dynamic.menu?after=additions">
+		<menuContribution locationURI="popup:sid.dynamic.explorer.menu?after=additions">
 			<command commandId="sid.dynamic.instrumentAllLoopHeadersCommand" 
 					 icon="icons/gears.png" 
 					 label="Instrument All Loop Headers" 
 					 style="push" />
 		</menuContribution>
-		<menuContribution locationURI="popup:sid.dynamic.menu?after=additions">
+		<menuContribution locationURI="popup:sid.dynamic.explorer.menu?after=additions">
 			<command commandId="sid.dynamic.createDriverProjectCommand" 
 					 icon="icons/gears.png" 
 					 label="Create Driver Project" 
 					 style="push" />
 		</menuContribution>
 	</extension>
+	
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="popup:#TextEditorContext?after=additions">
+			<menu id="sid.dynamic.editor.menu" 
+				  label="SID" />
+		</menuContribution>
+		<menuContribution locationURI="popup:sid.dynamic.editor.menu?after=additions">
+			<command commandId="sid.dynamic.createMethodDriverProjectCommand" 
+					 icon="icons/gears.png" 
+					 label="Instrument + Create Method Driver Project" 
+					 style="push" />
+		</menuContribution>
+	</extension>
+
 </plugin>
