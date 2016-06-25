@@ -1,4 +1,4 @@
-package sid.ui.handlers;
+package sid.handlers;
 
 import java.io.File;
 import java.io.FileNotFoundException;

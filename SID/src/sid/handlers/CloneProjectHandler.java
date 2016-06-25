@@ -1,11 +1,10 @@
-package sid.ui.handlers;
+package sid.handlers;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreePath;
@@ -15,19 +14,23 @@ import org.eclipse.ui.PlatformUI;
 
 import com.ensoftcorp.open.commons.utils.DisplayUtils;
 
+import sid.dynamic.phases.Cloning;
 import sid.dynamic.phases.Instrumentation;
+import sid.dynamic.phases.Setup;
 
-public class InstrumentAllLoopHeadersProjectHandler extends AbstractHandler {
-	public InstrumentAllLoopHeadersProjectHandler() {}
+public class CloneProjectHandler extends AbstractHandler {
+	public CloneProjectHandler() {
+	}
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		
+		IProject cloneProject = null;
 		try {
+			// get the package explorer selection
 			IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 			ISelection selection = window.getSelectionService().getSelection("org.eclipse.jdt.ui.PackageExplorer");
-
+			
 			if(selection == null){
-				DisplayUtils.showMessage("Please select a project.");
+				DisplayUtils.showMessage("Please select a project to clone.");
 				return null;
 			}
 			
@@ -43,15 +46,26 @@ public class InstrumentAllLoopHeadersProjectHandler extends AbstractHandler {
 				project = ((IResource) last).getProject();
 			} 
 			
-			Instrumentation.instrumentAllLoopHeaders(project);
+			// clone the project and add the jimple instruments
 			
-			project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
-			
-			DisplayUtils.showMessage("All loop headers have been instrumented.");
+			IProject dynamicSupportProject = Setup.getOrCreateDynamicSupportProject();
+			if(!dynamicSupportProject.exists()){
+				DisplayUtils.showMessage("Unable to locate DynamicSupport project.");
+				return null;
+			}
+			if(project != null){
+				cloneProject = Cloning.clone(project, "clone");
+				Instrumentation.addInstruments(cloneProject, dynamicSupportProject);
+			} else {
+				DisplayUtils.showMessage("Invalid selection. Please select the project to clone.");
+			}
 		} catch (Exception e) {
-			DisplayUtils.showError(e, "Error creating driver project.");
+			DisplayUtils.showError(e, "Error cloning project.");
+			if(cloneProject != null){
+				Setup.deleteProject(cloneProject);
+			}
 		}
-
+		
 		return null;
 	}
 

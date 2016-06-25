@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+    <extension point="org.eclipse.ui.handlers">
+		<handler commandId="sid.dynamic.cloneProjectCommand"
+				 class="sid.dynamic.ui.handlers.CloneProjectHandler">
+		</handler>
+		<handler commandId="sid.dynamic.instrumentAllLoopHeadersCommand"
+				 class="sid.dynamic.ui.handlers.InstrumentAllLoopHeadersProjectHandler">
+		</handler>
+		<handler commandId="sid.dynamic.createDriverProjectCommand"
+				 class="sid.dynamic.ui.handlers.CreateDriverProjectHandler">
+		</handler>
+	</extension>
+	
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="popup:org.eclipse.jdt.ui.PackageExplorer?after=additions">
+			<menu id="sid.dynamic.menu" 
+				  label="SID" />
+		</menuContribution>
+		<menuContribution locationURI="popup:sid.dynamic.menu?after=additions">
+			<command commandId="sid.dynamic.cloneProjectCommand" 
+					 icon="icons/clone.png" 
+					 label="Clone Project (with instruments)" 
+					 style="push" />
+		</menuContribution>
+		<menuContribution locationURI="popup:sid.dynamic.menu?after=additions">
+			<command commandId="sid.dynamic.instrumentAllLoopHeadersCommand" 
+					 icon="icons/gears.png" 
+					 label="Instrument All Loop Headers" 
+					 style="push" />
+		</menuContribution>
+		<menuContribution locationURI="popup:sid.dynamic.menu?after=additions">
+			<command commandId="sid.dynamic.createDriverProjectCommand" 
+					 icon="icons/gears.png" 
+					 label="Create Driver Project" 
+					 style="push" />
+		</menuContribution>
+	</extension>
+</plugin>
