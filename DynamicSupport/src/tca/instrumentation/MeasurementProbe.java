@@ -14,7 +14,7 @@ public abstract class MeasurementProbe implements Probe {
 
 	public abstract void setSize(int size);
 	
-	public HashMap<String, Long> getCountersForSize(Integer size){
+	public HashMap<String, Long> getMeasurementForSize(Integer size){
 		if(!measurements.containsKey(size)){
 			measurements.put(size, new HashMap<String, Long>());
 		}

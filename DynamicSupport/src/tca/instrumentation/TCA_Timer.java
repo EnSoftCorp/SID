@@ -29,13 +29,13 @@ public class TCA_Timer extends MeasurementProbe {
 	public synchronized void stop(String key){
 		if(lastTimestamp.containsKey(key)){
 			long delta = System.nanoTime()-lastTimestamp.remove(key);
-			if(measurements.containsKey(currentSize)){
-				measurements.get(currentSize).put(key, delta);
-			} else {
-				HashMap<String, Long> values = new HashMap<String, Long>();
-				values.put(key, delta);
-				measurements.put(currentSize, values);
+			HashMap<String, Long> times = getMeasurementForSize(currentSize);
+			Long timeValue = 0L;
+			if (times.containsKey(key)) {
+				timeValue = times.remove(key);
 			}
+			timeValue+=delta;
+			times.put(key, timeValue);
 		}
 	}
 	

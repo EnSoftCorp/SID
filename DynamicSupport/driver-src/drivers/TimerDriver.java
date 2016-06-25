@@ -1,8 +1,8 @@
 package drivers;
 
-import tca.instrumentation.TCA_Counter;
+import tca.instrumentation.TCA_Timer;
 
-public class CounterDriver {
+public class TimerDriver {
 
 	// change total work units to increase or decrease 
 	// the number of collected data points
@@ -10,11 +10,11 @@ public class CounterDriver {
 	
 	public static void main(String[] args) throws Exception {
 		for(int i=1; i<=TOTAL_WORK_TASKS; i++){
-			TCA_Counter.getInstance().setSize(i);
+			TCA_Timer.getInstance().setSize(i);
 			Object[] parameters = getWorkload(i);
 			// TODO: call method with parameters for a given workload
 		}
-		tca.TCA.plotCounterRegression("Counter Workload Profile", TOTAL_WORK_TASKS);
+		tca.TCA.plotTimerRegression("Timer Workload Profile", TOTAL_WORK_TASKS);
 	}
 	
 	private static Object[] getWorkload(int size){

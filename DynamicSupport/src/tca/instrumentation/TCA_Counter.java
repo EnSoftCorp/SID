@@ -20,7 +20,7 @@ public class TCA_Counter extends MeasurementProbe {
 	}
 	
 	private synchronized void incrementCounter(String key) {
-		HashMap<String, Long> counters = getCountersForSize(currentSize);
+		HashMap<String, Long> counters = getMeasurementForSize(currentSize);
 		Long counterValue = 0L;
 		if (counters.containsKey(key)) {
 			counterValue = counters.remove(key);

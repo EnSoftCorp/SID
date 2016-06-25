@@ -28,7 +28,7 @@ public abstract class tca.instrumentation.MeasurementProbe extends java.lang.Obj
 
     public abstract void setSize(int);
 
-    public java.util.HashMap getCountersForSize(java.lang.Integer)
+    public java.util.HashMap getMeasurementForSize(java.lang.Integer)
     {
         tca.instrumentation.MeasurementProbe r0;
         java.lang.Integer r1;

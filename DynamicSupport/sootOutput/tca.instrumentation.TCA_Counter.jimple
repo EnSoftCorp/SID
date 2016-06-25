@@ -74,7 +74,7 @@ public class tca.instrumentation.TCA_Counter extends tca.instrumentation.Measure
 
         $r3 = r0.<tca.instrumentation.TCA_Counter: java.lang.Integer currentSize>;
 
-        r2 = virtualinvoke r0.<tca.instrumentation.TCA_Counter: java.util.HashMap getCountersForSize(java.lang.Integer)>($r3);
+        r2 = virtualinvoke r0.<tca.instrumentation.TCA_Counter: java.util.HashMap getMeasurementForSize(java.lang.Integer)>($r3);
 
         r6 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>(0L);
 

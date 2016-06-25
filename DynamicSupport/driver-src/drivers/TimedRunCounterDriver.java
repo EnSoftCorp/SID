@@ -3,11 +3,11 @@ package drivers;
 import java.io.File;
 import java.io.IOException;
 
-import tca.instrumentation.TCA_Counter;
+import tca.instrumentation.TCA_Timer;
 
-public class TimedRunDriver {
+public class TimedRunCounterDriver {
 
-	public static final long TIMER = 1000*10; // run for 10 seconds
+	public static final long TIMER = 1000*30; // run for 30 seconds
 	
 	@SuppressWarnings("deprecation")
 	public static void main(String[] args) {
@@ -32,10 +32,10 @@ TCA_MAIN_METHODS
 		}
 		t.stop(); // I feel dirty...:(
 		
-		File outputFile = new File("measurements.csv");
+		File outputFile = new File("timer-measurements.csv");
 		System.out.println("Saving measurements to " + outputFile.getAbsolutePath());
 		try {
-			TCA_Counter.saveKeyMeasurements(outputFile);
+			TCA_Timer.getInstance().saveKeyMeasurements(outputFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

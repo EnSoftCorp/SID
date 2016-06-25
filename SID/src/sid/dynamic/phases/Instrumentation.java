@@ -22,6 +22,7 @@ import com.ensoftcorp.open.commons.analysis.utils.StandardQueries;
 
 import sid.dynamic.instruments.Instrument;
 import sid.dynamic.instruments.counters.LoopIterationCounter;
+import sid.dynamic.instruments.timers.LoopIterationTimer;
 import sid.log.Log;
 import sid.statics.LoopAnalyzer;
 
@@ -91,15 +92,19 @@ public class Instrumentation {
 			Q exceptionalLoopHeaders = allLoopHeaders.contained().nodesTaggedWithAny(XCSG.CaughtValue).containers().nodesTaggedWithAny(LoopAnalyzer.CFGNode.LOOP_HEADER);;
 			Q safeLoopHeadersToInstrument = allLoopHeaders.difference(exceptionalLoopHeaders);
 			for(GraphElement loopHeader : safeLoopHeadersToInstrument.eval().nodes()){
-				Instrument instrument = new LoopIterationCounter(project, loopHeader);
-				instrument.performInstrumentation();
+				Instrument counterInstrument = new LoopIterationCounter(project, loopHeader);
+				counterInstrument.performInstrumentation();
+				Instrument timerInstrument = new LoopIterationTimer(project, loopHeader);
+				timerInstrument.performInstrumentation();
 				GraphElement method = StandardQueries.getContainingMethod(loopHeader);
 				if(result.containsKey(method)){
 					LinkedList<Instrument> instruments = result.get(method);
-					instruments.add(instrument);
+					instruments.add(counterInstrument);
+					instruments.add(timerInstrument);
 				} else {
 					LinkedList<Instrument> instruments = new LinkedList<Instrument>();
-					instruments.add(instrument);
+					instruments.add(counterInstrument);
+					instruments.add(timerInstrument);
 					result.put(method, instruments);
 				}
 			}
