@@ -3,7 +3,7 @@ package drivers;
 import java.io.File;
 import java.io.IOException;
 
-import tca.instrumentation.TCA_Timer;
+import tca.instrumentation.TCA_Counter;
 
 public class TimedRunCounterDriver {
 
@@ -35,7 +35,7 @@ TCA_MAIN_METHODS
 		File outputFile = new File("counter-measurements.csv");
 		System.out.println("Saving measurements to " + outputFile.getAbsolutePath());
 		try {
-			TCA_Timer.getInstance().saveKeyMeasurements(outputFile);
+			TCA_Counter.getInstance().saveKeyMeasurements(outputFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
