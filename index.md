@@ -5,9 +5,7 @@ layout: default
 ## Overview
 The SID Analysis Toolbox project provides statically-informed dynamic (SID) analysis  capabilities to the Atlas program analysis framework.
 
-**Announcement:** Major update coming soon. Please check back soon...
-
-<center><iframe width="560" height="315" src="//www.youtube.com/embed/SI1t4G2faDo" frameborder="0" allowfullscreen></iframe></center>
+<center><iframe width="560" height="315" src="//www.youtube.com/embed/8dH7q9aPD44" frameborder="0" allowfullscreen></iframe></center>
 
 ## Features
 The SID Analysis Toolbox project supports the following.
