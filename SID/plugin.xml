@@ -53,5 +53,12 @@
 					 style="push" />
 		</menuContribution>
 	</extension>
+	
+	<extension
+         point="com.ensoftcorp.atlas.ui.smartViewScript">
+      <script
+            class="sid.ui.smart.LoopCallGraphSmartView">
+      </script>
+   </extension>
 
 </plugin>
