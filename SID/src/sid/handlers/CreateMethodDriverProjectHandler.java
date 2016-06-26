@@ -248,7 +248,7 @@ public class CreateMethodDriverProjectHandler extends AbstractHandler {
 				StringBuilder callsites = new StringBuilder();
 
 				if(content.contains(TCA_TARGET_METHOD_INJECTION_SITE)){
-					content = content.replace(TCA_TARGET_METHOD_INJECTION_SITE, "				// " + createMethodDriverCallsite(method));
+					content = content.replace(TCA_TARGET_METHOD_INJECTION_SITE, "// " + createMethodDriverCallsite(method));
 				}
 				
 				if(content.contains(TCA_MAIN_METHOD_INJECTION_SITE)){
