@@ -12,7 +12,7 @@ public class TimerDriver {
 		for(int i=1; i<=TOTAL_WORK_TASKS; i++){
 			TCA_Timer.getInstance().setSize(i);
 			Object[] parameters = getWorkload(i);
-			// TODO: call method with parameters for a given workload
+			TCA_TARGET_METHOD_CALLSITE
 		}
 		tca.TCA.plotTimerRegression("Timer Workload Profile", TOTAL_WORK_TASKS);
 	}

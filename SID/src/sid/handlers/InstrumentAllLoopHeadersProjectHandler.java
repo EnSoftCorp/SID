@@ -1,5 +1,8 @@
 package sid.handlers;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -13,8 +16,10 @@ import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
+import com.ensoftcorp.atlas.core.db.graph.GraphElement;
 import com.ensoftcorp.open.commons.utils.DisplayUtils;
 
+import sid.dynamic.instruments.Instrument;
 import sid.dynamic.phases.Instrumentation;
 
 public class InstrumentAllLoopHeadersProjectHandler extends AbstractHandler {
@@ -43,11 +48,11 @@ public class InstrumentAllLoopHeadersProjectHandler extends AbstractHandler {
 				project = ((IResource) last).getProject();
 			} 
 			
-			Instrumentation.instrumentAllLoopHeaders(project);
+			HashMap<GraphElement,LinkedList<Instrument>> instruments = Instrumentation.instrumentAllLoopHeaders(project);
 			
 			project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
 			
-			DisplayUtils.showMessage("All loop headers have been instrumented.");
+			DisplayUtils.showMessage("All " + instruments.keySet().size() + " loop headers have been instrumented.");
 		} catch (Exception e) {
 			DisplayUtils.showError(e, "Error creating driver project.");
 		}

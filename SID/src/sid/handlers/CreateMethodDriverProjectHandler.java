@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -49,14 +50,10 @@ import com.ensoftcorp.open.commons.analysis.DiscoverMainMethods;
 import com.ensoftcorp.open.commons.utils.DisplayUtils;
 
 import sid.dynamic.instruments.Instrument;
-import sid.dynamic.instruments.counters.LoopIterationCounter;
-import sid.dynamic.instruments.timers.LoopIterationTimer;
 import sid.dynamic.phases.Cloning;
 import sid.dynamic.phases.Compilation;
 import sid.dynamic.phases.Instrumentation;
 import sid.dynamic.phases.Setup;
-import sid.log.Log;
-import sid.statics.LoopAnalyzer;
 import sid.statics.LoopCallGraph;
 
 public class CreateMethodDriverProjectHandler extends AbstractHandler {
@@ -87,87 +84,69 @@ public class CreateMethodDriverProjectHandler extends AbstractHandler {
 					"Please only select one method at a time for targeted dynamic analysis!"
 							+ "\nMethod children are automatically instrumented.\n");
 		}
-
-		GraphElement method = methodNodes.getFirst();
-
-		// get the method loop call graph for selected methods
-		LoopCallGraph lcg = LoopCallGraph.getLoopCallGraph();
-		StyledResult methodLCG = LoopCallGraph.getMethodLCG(method, lcg);
-
+		
 		// clone the project and add the jimple instruments
+		IProject cloneProject = null;
 		try {
-			IProject cloneProject = null;
 			IProject dynamicSupportProject = Setup.getOrCreateDynamicSupportProject();
-			if (!dynamicSupportProject.exists()) {
+			if(!dynamicSupportProject.exists()){
 				DisplayUtils.showMessage("Unable to locate DynamicSupport project.");
 				return null;
 			}
-			if (project != null) {
-				try {
-					cloneProject = Cloning.clone(project, "clone");
-					Instrumentation.addInstruments(cloneProject, dynamicSupportProject);
-				} catch (Exception e) {
-					Log.error("Cloning Failed!", e);
-				}
+			if(project != null){
+				cloneProject = Cloning.clone(project, "clone");
+				Instrumentation.addInstruments(cloneProject, dynamicSupportProject);
 			} else {
 				DisplayUtils.showMessage("Invalid selection. Please select the project to clone.");
 			}
-			// refresh the project, just so everything is in sync
-			cloneProject.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
-
-			// instrument project
-			Log.info("Instrumenting...");
-			LinkedList<Instrument> instruments = new LinkedList<Instrument>();
-
-			// instrument the bytecode and compile
-			Q containsEdges = Common.universe().edgesTaggedWithAny(XCSG.Contains);
-			Q loopHeaders = containsEdges.forward(methodLCG.getResult())
-					.nodesTaggedWithAny(LoopAnalyzer.CFGNode.LOOP_HEADER);
-			for (GraphElement loopHeader : loopHeaders.eval().nodes()) {
-				instruments.add(new LoopIterationCounter(cloneProject, loopHeader));
-				instruments.add(new LoopIterationTimer(cloneProject, loopHeader));
-			}
-			for (Instrument instrument : instruments) {
-				instrument.performInstrumentation();
-			}
-
-			// instrument the binary
-			try {
-				String driverProjectName = Cloning.getUniqueProjectName(project.getName(), "driver");
-
-				if (!dynamicSupportProject.exists()) {
-					DisplayUtils.showMessage("Unable to locate DynamicSupport project.");
-					return null;
-				}
-
-				File instrumentedBytecode = File.createTempFile(project.getName(), ".jar");
-				try {
-					File projectDirectory = project.getLocation().toFile().getCanonicalFile();
-					File jimpleDirectory = Instrumentation.getJimpleDirectory(projectDirectory);
-					IFolder jimpleFolder = project.getFolder(projectDirectory.toURI()
-							.relativize(new File(jimpleDirectory.getCanonicalPath()).toURI()).getPath());
-					Compilation.compile(project, jimpleFolder, instrumentedBytecode);
-				} catch (Throwable t) {
-					DisplayUtils.showError(t, "Error compiling Jimple in \"" + project.getName() + "\".");
-					return null;
-				}
-
-				createDriver(driverProjectName, dynamicSupportProject, instrumentedBytecode);
-			} catch (Exception e) {
-				Log.error(e.getMessage(), e);
-			}
 		} catch (Exception e) {
-			Log.error("Failed to create driver", e);
+			DisplayUtils.showError(e, "Error cloning project.");
+			if(cloneProject != null){
+				Setup.deleteProject(cloneProject);
+			}
 		}
-//		} else {
-//			Log.error("Could not located project for method!", new RuntimeException("Could not find project."));
-//		}
 
+		GraphElement method = methodNodes.getFirst();
+		try {
+			// get the method loop call graph for selected methods
+			LoopCallGraph lcg = LoopCallGraph.getLoopCallGraph();
+			StyledResult methodLCG = LoopCallGraph.getMethodLCG(method, lcg);
+			HashMap<GraphElement,LinkedList<Instrument>> instruments = Instrumentation.instrumentContainedLoopHeaders(cloneProject, methodLCG.getResult());
+			cloneProject.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
+			DisplayUtils.showMessage("Instrumented " + instruments.keySet().size() + " loop headers.");
+		} catch (Exception e){
+			DisplayUtils.showError(e, "Could not instrument project.");
+		}
+		
+		try {
+			String driverProjectName = Cloning.getUniqueProjectName(project.getName(), "driver");
+			
+			IProject dynamicSupportProject = Setup.getOrCreateDynamicSupportProject();
+			if(!dynamicSupportProject.exists()){
+				DisplayUtils.showMessage("Unable to locate DynamicSupport project.");
+				return null;
+			}
+			
+			File instrumentedBytecode = File.createTempFile(cloneProject.getName(), ".jar");
+			try {
+				File projectDirectory = cloneProject.getLocation().toFile().getCanonicalFile();
+				File jimpleDirectory = Instrumentation.getJimpleDirectory(projectDirectory);
+				IFolder jimpleFolder = cloneProject.getFolder(projectDirectory.toURI().relativize(new File(jimpleDirectory.getCanonicalPath()).toURI()).getPath());
+				Compilation.compile(cloneProject, jimpleFolder, instrumentedBytecode);
+			} catch (Throwable t){
+				DisplayUtils.showError(t, "Error compiling Jimple in \"" + cloneProject.getName() + "\".");
+				return null;
+			}
+			
+			createDriver(driverProjectName, dynamicSupportProject, instrumentedBytecode, method);
+		} catch (Exception e){
+			DisplayUtils.showError(e, "Could not create driver project.");
+		}
+		
 		return null;
 	}
 
-	private void createDriver(String driverProjectName, IProject dynamicSupportProject, File instrumentedBytecode)
-			throws Exception {
+	private void createDriver(String driverProjectName, IProject dynamicSupportProject, File instrumentedBytecode, GraphElement method) throws Exception {
 		IProject driverProject = null;
 		try {
 			// create an empty project
@@ -195,52 +174,41 @@ public class CreateMethodDriverProjectHandler extends AbstractHandler {
 			for (LibraryLocation element : locations) {
 				entries.add(JavaCore.newLibraryEntry(element.getSystemLibraryPath(), null, null));
 			}
-
+			
 			// add instrumented bytecode to the classpath
-			File libsDirectory = new File(
-					driverProject.getLocation().toFile().getAbsolutePath() + File.separatorChar + "lib");
+			File libsDirectory = new File(driverProject.getLocation().toFile().getAbsolutePath() + File.separatorChar + "lib");
 			libsDirectory.mkdirs();
 			File bytecodeJar = new File(libsDirectory.getAbsolutePath() + File.separatorChar + "bytecode.jar");
 			instrumentedBytecode.renameTo(bytecodeJar);
 			instrumentedBytecode = bytecodeJar;
 			String instrumentedBytecodeCanonicalPath = instrumentedBytecode.getCanonicalPath();
 			String projectCanonicalPath = jDriverProject.getProject().getLocation().toFile().getCanonicalPath();
-			String instrumentedBytecodeBasePath = instrumentedBytecodeCanonicalPath
-					.substring(instrumentedBytecodeCanonicalPath.indexOf(projectCanonicalPath));
+			String instrumentedBytecodeBasePath = instrumentedBytecodeCanonicalPath.substring(instrumentedBytecodeCanonicalPath.indexOf(projectCanonicalPath));
 			String instrumentedBytecodeParentCanonicalPath = instrumentedBytecode.getCanonicalPath();
-			String instrumentedBytecodeParentBasePath = instrumentedBytecodeParentCanonicalPath
-					.substring(instrumentedBytecodeParentCanonicalPath.indexOf(projectCanonicalPath));
-			entries.add(JavaCore.newLibraryEntry(new Path(instrumentedBytecodeBasePath), null,
-					new Path(instrumentedBytecodeParentBasePath)));
-
-			File newLibsDirectory = new File(
-					jDriverProject.getProject().getLocation().toFile().getAbsolutePath() + File.separatorChar + "lib");
+			String instrumentedBytecodeParentBasePath = instrumentedBytecodeParentCanonicalPath.substring(instrumentedBytecodeParentCanonicalPath.indexOf(projectCanonicalPath));
+			entries.add(JavaCore.newLibraryEntry(new Path(instrumentedBytecodeBasePath), null, new Path(instrumentedBytecodeParentBasePath)));
+			
+			File newLibsDirectory = new File(jDriverProject.getProject().getLocation().toFile().getAbsolutePath() + File.separatorChar + "lib");
 			newLibsDirectory.mkdirs();
-			File dynamicSupportLibDirectory = new File(
-					dynamicSupportProject.getLocation().toFile().getAbsolutePath() + File.separatorChar + "driver-lib");
-			if (dynamicSupportLibDirectory.exists()) {
-				for (File jar : dynamicSupportLibDirectory.listFiles()) {
-					if (jar.getName().endsWith(".jar")) {
-						File copiedJar = new File(
-								newLibsDirectory.getAbsolutePath() + File.separatorChar + jar.getName());
+			File dynamicSupportLibDirectory = new File(dynamicSupportProject.getLocation().toFile().getAbsolutePath() + File.separatorChar + "driver-lib");
+			if(dynamicSupportLibDirectory.exists()){
+				for(File jar : dynamicSupportLibDirectory.listFiles()){
+					if(jar.getName().endsWith(".jar")){
+						File copiedJar = new File(newLibsDirectory.getAbsolutePath() + File.separatorChar + jar.getName());
 						Files.copy(jar.toPath(), copiedJar.toPath());
 						String copiedJarCanonicalPath = copiedJar.getCanonicalPath();
-						String driverProjectCanonicalPath = jDriverProject.getProject().getLocation().toFile()
-								.getCanonicalPath();
-						String copiedJarBasePath = copiedJarCanonicalPath
-								.substring(copiedJarCanonicalPath.indexOf(driverProjectCanonicalPath));
+						String driverProjectCanonicalPath = jDriverProject.getProject().getLocation().toFile().getCanonicalPath();
+						String copiedJarBasePath = copiedJarCanonicalPath.substring(copiedJarCanonicalPath.indexOf(driverProjectCanonicalPath));
 						String copiedJarParentCanonicalPath = instrumentedBytecode.getCanonicalPath();
-						String copiedJarParentBasePath = copiedJarParentCanonicalPath
-								.substring(copiedJarParentCanonicalPath.indexOf(driverProjectCanonicalPath));
-						entries.add(JavaCore.newLibraryEntry(new Path(copiedJarBasePath), null,
-								new Path(copiedJarParentBasePath)));
+						String copiedJarParentBasePath = copiedJarParentCanonicalPath.substring(copiedJarParentCanonicalPath.indexOf(driverProjectCanonicalPath));
+						entries.add(JavaCore.newLibraryEntry(new Path(copiedJarBasePath), null, new Path(copiedJarParentBasePath)));
 					}
 				}
 			}
 
 			// add libs to project class path
 			jDriverProject.setRawClasspath(entries.toArray(new IClasspathEntry[entries.size()]), null);
-
+			
 			// add a source folder
 			IFolder sourceFolder = driverProject.getFolder("src");
 			sourceFolder.create(false, true, null);
@@ -252,104 +220,94 @@ public class CreateMethodDriverProjectHandler extends AbstractHandler {
 			System.arraycopy(oldEntries, 0, newEntries, 0, oldEntries.length);
 			newEntries[oldEntries.length] = JavaCore.newSourceEntry(root.getPath());
 			jDriverProject.setRawClasspath(newEntries, null);
-
+			
 			// add the support classes and driver templates
-			File dynamicSupportSrcDirectory = new File(
-					dynamicSupportProject.getLocation().toFile().getAbsolutePath() + File.separatorChar + "driver-src");
-			addSupportClasses(jDriverProject, sourceFolder, dynamicSupportSrcDirectory);
-		} catch (Exception e) {
-			if (driverProject != null) {
+			File dynamicSupportSrcDirectory = new File(dynamicSupportProject.getLocation().toFile().getAbsolutePath() + File.separatorChar + "driver-src");
+			addSupportClasses(jDriverProject, sourceFolder, dynamicSupportSrcDirectory, method);
+		} catch (Exception e){
+			if(driverProject != null){
 				Setup.deleteProject(driverProject);
 			}
 			throw e;
 		}
 	}
-
-	public static void addSupportClasses(IJavaProject jDriverProject, IFolder sourceFolder, File directory)
-			throws FileNotFoundException, JavaModelException {
-		for (File file : directory.listFiles()) {
-			if (file.isDirectory()) {
-				addSupportClasses(jDriverProject, sourceFolder, file);
-			} else if (file.getName().endsWith(".java")) {
-				String pkgName = file.getParentFile().getName(); // TODO: will
-																	// have to
-																	// do
-																	// something
-																	// fancier
-																	// for
-																	// nested
-																	// package
-																	// levels
-																	// deeper
-																	// than 1
+	
+	public static void addSupportClasses(IJavaProject jDriverProject, IFolder sourceFolder, File directory, GraphElement method) throws FileNotFoundException, JavaModelException {
+		for(File file : directory.listFiles()){
+			if(file.isDirectory()){
+				addSupportClasses(jDriverProject, sourceFolder, file, method);
+			} else if(file.getName().endsWith(".java")){
+				String pkgName = file.getParentFile().getName(); // TODO: will have to do something fancier for nested package levels deeper than 1
 				Scanner scanner = new Scanner(file);
-				scanner.useDelimiter("\\Z");
+				scanner.useDelimiter("\\Z"); 
 				String content = scanner.next();
-
+				
 				// add callsites to all potential main methods
 				String TCA_MAIN_METHOD_INJECTION_SITE = "TCA_MAIN_METHODS";
+				String TCA_TARGET_METHOD_INJECTION_SITE = "TCA_TARGET_METHOD_CALLSITE";
 				StringBuilder callsites = new StringBuilder();
-				if (content.contains(TCA_MAIN_METHOD_INJECTION_SITE)) {
+
+				if(content.contains(TCA_TARGET_METHOD_INJECTION_SITE)){
+					content = content.replace(TCA_TARGET_METHOD_INJECTION_SITE, "				// " + createMethodDriverCallsite(method));
+				}
+				
+				if(content.contains(TCA_MAIN_METHOD_INJECTION_SITE)){
 					AtlasSet<Node> mainMethods = DiscoverMainMethods.findMainMethods().eval().nodes();
-					for (GraphElement mainMethod : mainMethods) {
+					for(GraphElement mainMethod : mainMethods){
 						callsites.append("				// " + createMainMethodCallsite(mainMethod) + "\n");
 					}
 				}
 				content = content.replace(TCA_MAIN_METHOD_INJECTION_SITE, callsites.toString());
-
+				
 				scanner.close();
-				IPackageFragment pkg = jDriverProject.getPackageFragmentRoot(sourceFolder)
-						.createPackageFragment(pkgName, false, null);
+				IPackageFragment pkg = jDriverProject.getPackageFragmentRoot(sourceFolder).createPackageFragment(pkgName, false, null);
 				pkg.createCompilationUnit(file.getName(), content, false, null);
 			}
 		}
 	}
-
-	// /**
-	// * Creates a string representing a source code callsite to the given
-	// method with an Object array for parameters
-	// * @param method
-	// * @return
-	// */
-	// public static String createMethodDriverCallsite(GraphElement method){
-	// String result = getQualifiedName(method);
-	// result += "(";
-	// HashMap<Integer,GraphElement> parameterTypes = new
-	// HashMap<Integer,GraphElement>();
-	// Q containsEdges = Common.universe().edgesTaggedWithAny(XCSG.Contains);
-	// Q typeOfEdges = Common.universe().edgesTaggedWithAny(XCSG.TypeOf);
-	// Q params =
-	// containsEdges.forwardStep(Common.toQ(method)).nodesTaggedWithAny(XCSG.Parameter);
-	// for(GraphElement param : params.eval().nodes()){
-	// int paramIndex = (Integer) param.getAttr(XCSG.parameterIndex) + 1;
-	// GraphElement paramType =
-	// typeOfEdges.successors(Common.toQ(param)).eval().nodes().getFirst();
-	// parameterTypes.put(paramIndex, paramType);
-	// }
-	// String prefix = "";
-	// for(int i=1; i<=parameterTypes.size(); i++){
-	// GraphElement paramType = parameterTypes.get(i);
-	// result += prefix + "(" + getQualifiedName(paramType) + ") " +
-	// "parameters[" + (i-1) + "]";
-	// prefix = ", ";
-	// }
-	// result += ");";
-	// return result;
-	// }
-
-	public static String createMainMethodCallsite(GraphElement method) {
+	
+	/**
+	 * Creates a string representing a source code callsite to the given method
+	 * with an Object array for parameters
+	 * 
+	 * @param method
+	 * @return
+	 */
+	public static String createMethodDriverCallsite(GraphElement method) {
+		String result = getQualifiedName(method);
+		result += "(";
+		HashMap<Integer, GraphElement> parameterTypes = new HashMap<Integer, GraphElement>();
+		Q containsEdges = Common.universe().edgesTaggedWithAny(XCSG.Contains);
+		Q typeOfEdges = Common.universe().edgesTaggedWithAny(XCSG.TypeOf);
+		Q params = containsEdges.forwardStep(Common.toQ(method)).nodesTaggedWithAny(XCSG.Parameter);
+		for (GraphElement param : params.eval().nodes()) {
+			int paramIndex = (Integer) param.getAttr(XCSG.parameterIndex) + 1;
+			GraphElement paramType = typeOfEdges.successors(Common.toQ(param)).eval().nodes().getFirst();
+			parameterTypes.put(paramIndex, paramType);
+		}
+		String prefix = "";
+		for (int i = 1; i <= parameterTypes.size(); i++) {
+			GraphElement paramType = parameterTypes.get(i);
+			result += prefix + "(" + getQualifiedName(paramType) + ") " + "parameters[" + (i - 1) + "]";
+			prefix = ", ";
+		}
+		result += ");";
+		return result;
+	}
+	
+	public static String createMainMethodCallsite(GraphElement method){
 		return getQualifiedName(method) + "(new String[]{});";
 	}
-
+	
 	// helper method to get a qualified name of a method
-	public static String getQualifiedName(GraphElement node) {
+	public static String getQualifiedName(GraphElement node){
 		String name = node.getAttr(XCSG.name).toString();
 		// qualify the label
 		Q containsEdges = Common.universe().edgesTaggedWithAny(XCSG.Contains);
 		GraphElement parent = containsEdges.predecessors(Common.toQ(node)).eval().nodes().getFirst();
-		while (parent != null && !parent.tags().contains(XCSG.Project) && !parent.tags().contains(XCSG.Library)) {
+		while(parent != null && !parent.tags().contains(XCSG.Project) && !parent.tags().contains(XCSG.Library)){
 			// skip adding qualified part for default package
-			if (!(parent.tags().contains(XCSG.Package) && parent.getAttr(XCSG.name).toString().equals(""))) {
+			if(!(parent.tags().contains(XCSG.Package) && parent.getAttr(XCSG.name).toString().equals(""))){
 				name = parent.getAttr(XCSG.name).toString() + "." + name;
 			}
 			parent = containsEdges.predecessors(Common.toQ(parent)).eval().nodes().getFirst();

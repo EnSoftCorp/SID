@@ -203,6 +203,7 @@ public class CreateDriverProjectHandler extends AbstractHandler {
 				// add callsites to all potential main methods
 				String TCA_MAIN_METHOD_INJECTION_SITE = "TCA_MAIN_METHODS";
 				StringBuilder callsites = new StringBuilder();
+				content = content.replace("TCA_TARGET_METHOD_CALLSITE", "// TODO: call method with parameters for a given workload");
 				if(content.contains(TCA_MAIN_METHOD_INJECTION_SITE)){
 					AtlasSet<Node> mainMethods = DiscoverMainMethods.findMainMethods().eval().nodes();
 					for(GraphElement mainMethod : mainMethods){

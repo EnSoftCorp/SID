@@ -12,7 +12,7 @@ public class CounterDriver {
 		for(int i=1; i<=TOTAL_WORK_TASKS; i++){
 			TCA_Counter.getInstance().setSize(i);
 			Object[] parameters = getWorkload(i);
-			// TODO: call method with parameters for a given workload
+			TCA_TARGET_METHOD_CALLSITE
 		}
 		tca.TCA.plotCounterRegression("Counter Workload Profile", TOTAL_WORK_TASKS);
 	}
