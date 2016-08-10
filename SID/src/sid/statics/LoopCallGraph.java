@@ -406,8 +406,30 @@ public class LoopCallGraph {
 	public static LoopCallGraph getLoopCallGraph(){
 		UndoLoopAnalyzer.undoLoopAnalyzer(); // clear out any previous analysis
 		LoopAnalyzer.analyzeLoops();
-		LoopCallGraph lcg = new LoopCallGraph();
+		LoopCallGraph lcg = new LoopCallGraph();		
 		return lcg;
+	}
+	
+	public static Q getRecursiveMethods(){
+		Q callEdges = Common.universe().edgesTaggedWithAny(XCSG.Call);
+		Q methods = Common.universe().nodesTaggedWithAny(XCSG.Method);
+		JGraphTAdapter jgraphtAdapter = new JGraphTAdapter(methods.eval().nodes(), callEdges.eval().edges());
+		AtlasSet<Node> recursionNodes = new AtlasHashSet<Node>();
+		for(AtlasSet<Node> scc : jgraphtAdapter.findSCCs()){
+			if(scc.size() > 1){
+				// there are more than 1 nodes so these methods must be mutally recursive
+				recursionNodes.addAll(scc);
+			} else {
+				Node node = scc.one();
+				Q selfRecursive = Common.toQ(node).induce(callEdges);
+				// if there is a call edge to itself then the method is self recursive
+				if(selfRecursive.eval().edges().size() > 0){
+					recursionNodes.add(node);
+				}
+			}
+		}
+		Q recursiveMethods = Common.toQ(recursionNodes).induce(callEdges);
+		return recursiveMethods;
 	}
 
 	/**

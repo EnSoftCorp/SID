@@ -72,6 +72,10 @@ public class LoopCallGraphSmartView extends FilteringAtlasSmartViewScript implem
 		
 		LoopCallGraph lcg = new LoopCallGraph();
 		Q lcgQ = lcg.lcg();
+
+		// include recursive methods in lcg result
+		lcgQ = lcgQ.union(LoopCallGraph.getRecursiveMethods());
+		
 		Q callQ = Query.universe().edgesTaggedWithAny(XCSG.Call);
 		
 		lcgQ = lcgQ.union(lcgQ.reverseOn(callQ));

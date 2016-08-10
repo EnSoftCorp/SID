@@ -14,6 +14,7 @@ Require-Bundle: org.eclipse.ui,
  com.ensoftcorp.abp.common;bundle-version="3.0.10",
  ca.mcgill.sable.soot;bundle-version="2.5.2",
  ca.mcgill.sable.soot.lib;bundle-version="2.5.2",
- net.ontopia.utils;bundle-version="1.0.0"
+ net.ontopia.utils;bundle-version="1.0.0",
+ org.jgrapht;bundle-version="0.9.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
