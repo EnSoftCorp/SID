@@ -68,8 +68,8 @@ public class CallSite {
 		} else if (callsite.taggedWith(XCSG.DynamicDispatchCallSite)) {
 			AtlasSet<GraphElement> targetMethods = new AtlasHashSet<GraphElement>();
 			AtlasSet<Node> targetIdentities = getIdentity(dataFlowGraph, callsite).eval().nodes();
-			for (GraphElement targetIdentity : targetIdentities) {
-				GraphElement targetMethod = StandardQueries.getContainingMethod(targetIdentity);
+			for (Node targetIdentity : targetIdentities) {
+				Node targetMethod = StandardQueries.getContainingMethod(targetIdentity);
 				if (targetMethod != null){
 					targetMethods.add(targetMethod);
 				} else {

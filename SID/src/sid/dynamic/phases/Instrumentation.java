@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
 import com.ensoftcorp.atlas.core.db.graph.GraphElement;
+import com.ensoftcorp.atlas.core.db.graph.Node;
 import com.ensoftcorp.atlas.core.query.Q;
 import com.ensoftcorp.atlas.core.script.Common;
 import com.ensoftcorp.atlas.core.xcsg.XCSG;
@@ -91,7 +92,7 @@ public class Instrumentation {
 			}
 			Q exceptionalLoopHeaders = allLoopHeaders.contained().nodesTaggedWithAny(XCSG.CaughtValue).containers().nodesTaggedWithAny(LoopAnalyzer.CFGNode.LOOP_HEADER);;
 			Q safeLoopHeadersToInstrument = allLoopHeaders.difference(exceptionalLoopHeaders);
-			for(GraphElement loopHeader : safeLoopHeadersToInstrument.eval().nodes()){
+			for(Node loopHeader : safeLoopHeadersToInstrument.eval().nodes()){
 				Instrument counterInstrument = new LoopIterationCounter(project, loopHeader);
 				counterInstrument.performInstrumentation();
 				Instrument timerInstrument = new LoopIterationTimer(project, loopHeader);
