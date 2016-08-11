@@ -1,5 +1,7 @@
 package sid.ui.smart;
 
+import java.awt.Color;
+
 import com.ensoftcorp.atlas.core.highlight.Highlighter;
 import com.ensoftcorp.atlas.core.query.Q;
 import com.ensoftcorp.atlas.core.query.Query;
@@ -72,9 +74,6 @@ public class LoopCallGraphSmartView extends FilteringAtlasSmartViewScript implem
 		
 		LoopCallGraph lcg = new LoopCallGraph();
 		Q lcgQ = lcg.lcg();
-
-		// include recursive methods in lcg result
-		lcgQ = lcgQ.union(LoopCallGraph.getRecursiveMethods());
 		
 		Q callQ = Query.universe().edgesTaggedWithAny(XCSG.Call);
 		

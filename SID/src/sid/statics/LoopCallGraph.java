@@ -7,6 +7,9 @@ import static com.ensoftcorp.atlas.core.script.Common.universe;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
 
 import com.ensoftcorp.atlas.core.db.graph.Edge;
 import com.ensoftcorp.atlas.core.db.graph.Graph;
@@ -14,6 +17,7 @@ import com.ensoftcorp.atlas.core.db.graph.GraphElement;
 import com.ensoftcorp.atlas.core.db.graph.GraphElement.EdgeDirection;
 import com.ensoftcorp.atlas.core.db.graph.GraphElement.NodeDirection;
 import com.ensoftcorp.atlas.core.db.graph.Node;
+import com.ensoftcorp.atlas.core.db.graph.operation.InducedGraph;
 import com.ensoftcorp.atlas.core.db.set.AtlasHashSet;
 import com.ensoftcorp.atlas.core.db.set.AtlasSet;
 import com.ensoftcorp.atlas.core.highlight.Highlighter;
@@ -23,6 +27,7 @@ import com.ensoftcorp.atlas.core.query.Q;
 import com.ensoftcorp.atlas.core.script.Common;
 import com.ensoftcorp.atlas.core.script.StyledResult;
 import com.ensoftcorp.atlas.core.xcsg.XCSG;
+import com.ensoftcorp.open.commons.analysis.SetDefinitions;
 import com.ensoftcorp.open.commons.analysis.utils.StandardQueries;
 import com.ensoftcorp.open.commons.utils.DisplayUtils;
 
@@ -65,7 +70,8 @@ public class LoopCallGraph {
 		Q loopingMethods = getMethodsContainingLoops();
 		Q callEdges = getCallGraph();
 		Q callGraph = callEdges.between(loopingMethods, loopingMethods);
-		return callGraph;
+		Q recursiveMethods = LoopCallGraph.getRecursiveMethods();
+		return callGraph.union(recursiveMethods);
 	}
 	
 	/**
@@ -104,12 +110,24 @@ public class LoopCallGraph {
 			callEdgesFromWithinLoops.addAll(subResult.eval().edges());
 		}
 		
+		Q recursiveMethods = LoopCallGraph.getRecursiveMethods().retainNodes();
+		Q methodsContainingLoops = getMethodsContainingLoops();
+		
+		Q recursiveLoopMethods = recursiveMethods.intersection(methodsContainingLoops);
+		
+		Q recursiveOnlyMethods = recursiveMethods.difference(recursiveLoopMethods);
+		Q loopOnlyMethods = methodsContainingLoops.difference(recursiveLoopMethods);
 		
 		Highlighter h = new Highlighter(ConflictStrategy.LAST_MATCH);
 		
 		// Highlight methods containing loops with BLUE
-		Q methodsContainingLoops = getMethodsContainingLoops();
-		h.highlight(methodsContainingLoops, Color.BLUE.brighter().brighter());
+		h.highlight(loopOnlyMethods, Color.BLUE.brighter().brighter());
+		
+		// Highlight methods participating in recursion MAGENTA
+		h.highlight(recursiveOnlyMethods, Color.MAGENTA.brighter().brighter());
+		
+		// Highlight methods participating in both loops and recursion RED
+		h.highlight(recursiveLoopMethods, Color.RED.brighter().brighter());
 
 		// Retrieve the call edges from the resultant graph and color them ORANGE
 		h.highlightEdges(toQ(callEdgesFromWithinLoops), Color.ORANGE);
@@ -410,27 +428,44 @@ public class LoopCallGraph {
 		return lcg;
 	}
 	
+	// jgrapht library version
 	public static Q getRecursiveMethods(){
-		Q callEdges = Common.universe().edgesTaggedWithAny(XCSG.Call);
-		Q methods = Common.universe().nodesTaggedWithAny(XCSG.Method);
-		JGraphTAdapter jgraphtAdapter = new JGraphTAdapter(methods.eval().nodes(), callEdges.eval().edges());
+		Q callEdges = Common.universe().edgesTaggedWithAny(XCSG.Call).retainEdges();
+		JGraphTAdapter jgraphtAdapter = new JGraphTAdapter(callEdges.eval().nodes(), callEdges.eval().edges());
 		AtlasSet<Node> recursionNodes = new AtlasHashSet<Node>();
+		AtlasSet<Edge> recursionEdges = new AtlasHashSet<Edge>();
 		for(AtlasSet<Node> scc : jgraphtAdapter.findSCCs()){
-			if(scc.size() > 1){
-				// there are more than 1 nodes so these methods must be mutally recursive
-				recursionNodes.addAll(scc);
-			} else {
-				Node node = scc.one();
-				Q selfRecursive = Common.toQ(node).induce(callEdges);
-				// if there is a call edge to itself then the method is self recursive
-				if(selfRecursive.eval().edges().size() > 0){
-					recursionNodes.add(node);
-				}
+			Q recursion = Common.toQ(scc).induce(callEdges);
+			Graph recursionGraph = recursion.eval();
+			if(recursionGraph.edges().size() > 0){
+				// SCC must have at least one edge to be recursive
+				recursionNodes.addAll(recursionGraph.nodes());
+				recursionEdges.addAll(recursionGraph.edges());
 			}
 		}
-		Q recursiveMethods = Common.toQ(recursionNodes).induce(callEdges);
+		Q recursiveMethods = Common.toQ(recursionNodes).induce(Common.toQ(recursionEdges));
 		return recursiveMethods;
 	}
+	
+	// native atlas version
+//	public static Q getRecursiveMethods(){
+//		Q callEdges = Common.universe().edgesTaggedWithAny(XCSG.Call);
+//		Q[] sccs = stronglyConnectedComponents(callEdges);
+//		
+////		JGraphTAdapter jgraphtAdapter = new JGraphTAdapter(methods.eval().nodes(), callEdges.eval().edges());
+//		AtlasSet<Node> recursionNodes = new AtlasHashSet<Node>();
+//		AtlasSet<Edge> recursionEdges = new AtlasHashSet<Edge>();
+//		for(Q scc : sccs){
+//			Q recursion = scc.retainEdges();
+//			Graph recursionGraph = recursion.eval();
+//			if(recursionGraph.edges().size() > 0){
+//				recursionNodes.addAll(recursionGraph.nodes());
+//				recursionEdges.addAll(recursionGraph.edges());
+//			}
+//		}
+//		Q recursiveMethods = Common.toQ(recursionNodes).induce(Common.toQ(recursionEdges));
+//		return recursiveMethods;
+//	}
 
 	/**
 	 * Returns a resolved and highlighted loop call graph for a given entry point method
@@ -461,5 +496,109 @@ public class LoopCallGraph {
 		methodSubLevelLCG = methodSubLevelLCG.union(callGraph.forwardStep(Common.toQ(method))); //TODO: fix nasty hack...for bad lcg level
 		StyledResult result = new StyledResult(Common.resolve(null, methodSubLevelLCG), h);
 		return result;
+	}
+	
+	/**
+	 * Given a context, returns all strongly connected components in
+	 * that context. The resulting array contains each separate SCC found.
+	 * 
+	 * @param context
+	 * @return
+	 */
+	public static Q[] stronglyConnectedComponents(Q context){
+		Graph contextG = context.eval();
+		
+		Graph[] sccs = new TarjanSCC().scc(contextG, contextG.nodes());
+		
+		Q[] res = new Q[sccs.length];
+		for(int i=0; i<sccs.length; i++) res[i] = toQ(sccs[i]);
+	
+		return res;
+	}
+	
+	/**
+	 * Implementation of Tarjan's algorithm for finding strongly connected components.
+	 * 
+	 * https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
+	 * 
+	 * @author Tom Deering
+	 *
+	 */
+	private static class TarjanSCC {
+		private int verticesReached = 0;
+		private Map<GraphElement, Integer> preorderMap;
+		private Map<GraphElement, Integer> lowlinkMap;
+		private Map<Integer, AtlasSet<GraphElement>> sccMap;
+		private int cycleNum = 0;
+		private Stack<GraphElement> s;
+		private Graph context;
+		
+		/**
+		 * 
+		 * http://en.wikipedia.org/wiki/Tarjan%
+		 * 27s_strongly_connected_components_algorithm
+		 * 
+		 * @param context
+		 * @param atlasSet
+		 * @return
+		 */
+		public Graph[] scc(Graph context, AtlasSet<Node> atlasSet) {
+			verticesReached = 0;
+			preorderMap = new HashMap<GraphElement, Integer>((int) atlasSet.size() * 2);
+			lowlinkMap = new HashMap<GraphElement, Integer>((int) atlasSet.size() * 2);
+			sccMap = new HashMap<Integer, AtlasSet<GraphElement>>();
+			s = new Stack<GraphElement>();
+			this.context = context;
+
+			for (GraphElement fromNode : atlasSet){
+				if (!preorderMap.containsKey(fromNode)){
+					sccWalk(fromNode);
+				}
+			}
+
+			Graph[] res = new Graph[sccMap.size()];
+			int i = 0;
+			for (AtlasSet<GraphElement> nodeSet : sccMap.values()) {
+				res[i++] = new InducedGraph(nodeSet, context.edges());
+			}
+
+			return res;
+		}
+
+		private void sccWalk(GraphElement fromNode) {
+			preorderMap.put(fromNode, verticesReached);
+			lowlinkMap.put(fromNode, verticesReached);
+			verticesReached += 1;
+			s.push(fromNode);
+
+			for (GraphElement outgoingEdge : context.edges(fromNode, NodeDirection.OUT)) {
+				GraphElement dest = outgoingEdge.getNode(EdgeDirection.TO);
+
+				if (!preorderMap.containsKey(dest)) {
+					sccWalk(dest);
+					lowlinkMap.put(fromNode, minLowLink(fromNode, dest));
+				} else if (s.contains(dest)) {
+					lowlinkMap.put(fromNode, minLowLink(fromNode, dest));
+				}
+			}
+
+			if (preorderMap.get(fromNode).equals(lowlinkMap.get(fromNode))) {
+				GraphElement popped;
+				AtlasSet<GraphElement> allPopped = new AtlasHashSet<GraphElement>();
+				do {
+					popped = s.pop();
+					allPopped.add(popped);
+				} while (popped != fromNode);
+				if (allPopped.size() > 1) {
+					sccMap.put(cycleNum++, allPopped);
+				}
+			}
+		}
+
+		private Integer minLowLink(GraphElement first, GraphElement second) {
+			Integer ours = lowlinkMap.get(first);
+			Integer theirs = lowlinkMap.get(second);
+			return ours.compareTo(theirs) < 0 ? ours : theirs;
+		}
 	}
 }

@@ -72,7 +72,7 @@ public class JGraphTAdapter {
 			for(GraphElement node : scc){
 				set.add((Node) node);
 			}
-			result.add(nodes);
+			result.add(set);
 		}
 		return result;
 	}
