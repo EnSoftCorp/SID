@@ -1,6 +1,7 @@
 package sid.ui.smart;
 
 import com.ensoftcorp.atlas.core.highlight.Highlighter;
+import com.ensoftcorp.atlas.core.markup.MarkupFromH;
 import com.ensoftcorp.atlas.core.query.Q;
 import com.ensoftcorp.atlas.core.query.Query;
 import com.ensoftcorp.atlas.core.script.Common;
@@ -79,18 +80,20 @@ public class LoopCallGraphSmartView extends FilteringAtlasSmartViewScript implem
 		lcgQ = Common.resolve(null, lcgQ);
 		
 		Highlighter h = lcg.colorMethodsCalledFromWithinLoops();
+
+		// compute what to show for current steps
+		Q completeResult = lcgQ;
+		Q f = filteredSelection.forwardStepOn(completeResult, forward);
+		Q r = filteredSelection.reverseStepOn(completeResult, reverse);
+		Q result = f.union(r).union(filteredSelection);;
 		
-		Q f = filteredSelection.forwardStepOn(lcgQ, forward);
-		Q r = filteredSelection.reverseStepOn(lcgQ, reverse);
-		Q n = f.union(r);
-		
-		
-		Q f1 = filteredSelection.forwardStepOn(lcgQ, forward+1);
-		Q r1 = filteredSelection.reverseStepOn(lcgQ, reverse+1);
-		Q n1 = f1.union(r1);
-		Q frontier = n1.differenceEdges(n);
-		
-		return new FrontierStyledResult(n, frontier, h);
+		// compute what is on the frontier
+		Q frontierForward = filteredSelection.forwardStepOn(completeResult, forward+1);
+		Q frontierReverse = filteredSelection.reverseStepOn(completeResult, reverse+1);
+		frontierForward = frontierForward.retainEdges().differenceEdges(result);
+		frontierReverse = frontierReverse.retainEdges().differenceEdges(result);
+
+		return new FrontierStyledResult(result, frontierReverse, frontierForward, new MarkupFromH(h));
 	}
 
 	@Override
