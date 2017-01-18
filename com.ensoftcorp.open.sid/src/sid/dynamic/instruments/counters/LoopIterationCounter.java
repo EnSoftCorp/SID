@@ -11,8 +11,7 @@ import com.ensoftcorp.atlas.core.query.Attr.Node;
 import com.ensoftcorp.atlas.core.query.Q;
 import com.ensoftcorp.atlas.core.script.Common;
 import com.ensoftcorp.atlas.core.xcsg.XCSG;
-
-import sid.statics.LoopAnalyzer;
+import com.ensoftcorp.open.jimple.commons.loops.DecompiledLoopIdentification.CFGNode;
 
 public class LoopIterationCounter extends Counter {
 	
@@ -32,7 +31,7 @@ public class LoopIterationCounter extends Counter {
 
 	@Override
 	public String[] getSupportedGraphElements() {
-		return new String[]{LoopAnalyzer.CFGNode.LOOP_HEADER};
+		return new String[]{CFGNode.LOOP_HEADER};
 	}
 
 	@Override

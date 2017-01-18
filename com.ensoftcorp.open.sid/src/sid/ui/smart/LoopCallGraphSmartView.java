@@ -13,7 +13,6 @@ import com.ensoftcorp.atlas.ui.scripts.selections.FilteringAtlasSmartViewScript;
 import com.ensoftcorp.atlas.ui.scripts.selections.IResizableScript;
 import com.ensoftcorp.atlas.ui.selection.event.IAtlasSelectionEvent;
 
-import sid.statics.LoopAnalyzer;
 import sid.statics.LoopCallGraph;
 
 /**
@@ -66,11 +65,7 @@ public class LoopCallGraphSmartView extends FilteringAtlasSmartViewScript implem
 		if (CommonQueries.isEmpty(filteredSelection)){
 			return null;
 		}
-		
-		if(Common.universe().nodesTaggedWithAny(LoopAnalyzer.CFGNode.LOOP_HEADER).eval().nodes().isEmpty()){
-			LoopAnalyzer.analyzeLoops();
-		}
-		
+
 		LoopCallGraph lcg = new LoopCallGraph();
 		Q lcgQ = lcg.lcg();
 		

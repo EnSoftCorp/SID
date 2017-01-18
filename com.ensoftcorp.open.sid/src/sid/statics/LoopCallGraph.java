@@ -27,10 +27,10 @@ import com.ensoftcorp.atlas.core.query.Q;
 import com.ensoftcorp.atlas.core.script.Common;
 import com.ensoftcorp.atlas.core.script.StyledResult;
 import com.ensoftcorp.atlas.core.xcsg.XCSG;
+import com.ensoftcorp.open.commons.algorithms.JGraphTAdapter;
 import com.ensoftcorp.open.commons.analysis.StandardQueries;
 import com.ensoftcorp.open.commons.utilities.DisplayUtils;
-
-import sid.statics.LoopAnalyzer.CFGNode;
+import com.ensoftcorp.open.jimple.commons.loops.DecompiledLoopIdentification.CFGNode;
 
 public class LoopCallGraph {
 	
@@ -352,7 +352,7 @@ public class LoopCallGraph {
 	 * @return The set of methods containing loops
 	 */
 	public static Q getMethodsContainingLoops(){
-		Q headers = Common.universe().nodesTaggedWithAny(LoopAnalyzer.CFGNode.LOOP_HEADER);
+		Q headers = Common.universe().nodesTaggedWithAny(CFGNode.LOOP_HEADER);
 		Q loopingMethods = StandardQueries.getContainingFunctions(headers);
 		return loopingMethods;
 	}
@@ -421,8 +421,6 @@ public class LoopCallGraph {
 	 * @return
 	 */
 	public static LoopCallGraph getLoopCallGraph(){
-		UndoLoopAnalyzer.undoLoopAnalyzer(); // clear out any previous analysis
-		LoopAnalyzer.analyzeLoops();
 		LoopCallGraph lcg = new LoopCallGraph();		
 		return lcg;
 	}

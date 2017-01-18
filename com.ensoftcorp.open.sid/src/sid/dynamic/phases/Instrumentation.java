@@ -20,12 +20,12 @@ import com.ensoftcorp.atlas.core.query.Q;
 import com.ensoftcorp.atlas.core.script.Common;
 import com.ensoftcorp.atlas.core.xcsg.XCSG;
 import com.ensoftcorp.open.commons.analysis.StandardQueries;
+import com.ensoftcorp.open.jimple.commons.loops.DecompiledLoopIdentification.CFGNode;
 
 import sid.dynamic.instruments.Instrument;
 import sid.dynamic.instruments.counters.LoopIterationCounter;
 import sid.dynamic.instruments.timers.LoopIterationTimer;
 import sid.log.Log;
-import sid.statics.LoopAnalyzer;
 
 public class Instrumentation {
 
@@ -85,12 +85,8 @@ public class Instrumentation {
 		HashMap<GraphElement,LinkedList<Instrument>> result = new HashMap<GraphElement,LinkedList<Instrument>>();
 		try {
 			Log.info("Instrumenting all loop headers for " + project.getName() + " for the given context...");
-			Q allLoopHeaders = context.contained().nodesTaggedWithAny(LoopAnalyzer.CFGNode.LOOP_HEADER);
-			if(allLoopHeaders.eval().nodes().isEmpty()){
-				LoopAnalyzer.analyzeLoops();
-				allLoopHeaders = context.contained().nodesTaggedWithAny(LoopAnalyzer.CFGNode.LOOP_HEADER);
-			}
-			Q exceptionalLoopHeaders = allLoopHeaders.contained().nodesTaggedWithAny(XCSG.CaughtValue).containers().nodesTaggedWithAny(LoopAnalyzer.CFGNode.LOOP_HEADER);;
+			Q allLoopHeaders = context.contained().nodesTaggedWithAny(CFGNode.LOOP_HEADER);
+			Q exceptionalLoopHeaders = allLoopHeaders.contained().nodesTaggedWithAny(XCSG.CaughtValue).containers().nodesTaggedWithAny(CFGNode.LOOP_HEADER);;
 			Q safeLoopHeadersToInstrument = allLoopHeaders.difference(exceptionalLoopHeaders);
 			for(Node loopHeader : safeLoopHeadersToInstrument.eval().nodes()){
 				Instrument counterInstrument = new LoopIterationCounter(project, loopHeader);
