@@ -54,11 +54,14 @@
 		</menuContribution>
 	</extension>
 	
+	<!-- uncomment to enable smart view contribution -->
+	<!--
 	<extension
          point="com.ensoftcorp.atlas.ui.smartViewScript">
       <script
             class="com.ensoftcorp.open.sid.ui.smart.LoopCallGraphSmartView">
       </script>
    </extension>
+   -->
 
 </plugin>
