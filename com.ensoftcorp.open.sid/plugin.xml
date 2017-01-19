@@ -57,7 +57,7 @@
 	<extension
          point="com.ensoftcorp.atlas.ui.smartViewScript">
       <script
-            class="sid.ui.smart.LoopCallGraphSmartView">
+            class="com.ensoftcorp.open.sid.ui.smart.LoopCallGraphSmartView">
       </script>
    </extension>
 
