@@ -207,7 +207,7 @@ public class LoopCallGraph {
 				Q loopingCFGNodes = getContainingCFGNodes(callsites).selectNode(NESTING_DEPTH);
 				ArrayList<Integer> iDepths = new ArrayList<Integer>();
 				if(loopingCFGNodes.eval().nodes().isEmpty()){
-					DisplayUtils.show(Common.toQ(edge), null, true, "no");
+//					DisplayUtils.show(Common.toQ(edge), null, true, "no");
 				}
 				
 				// Iterate through the looping CFG nodes and compute the maximum nesting depth
@@ -381,8 +381,8 @@ public class LoopCallGraph {
 			GraphElement to = edge.getNode(EdgeDirection.TO);
 			Q callsites = getCallSitesForMethodInCaller(toQ(to), toQ(from));
 			if(callsites.eval().nodes().isEmpty()){
-				DisplayUtils.show(Common.toQ(from), null, true, "1");
-				DisplayUtils.show(Common.toQ(to), null, true, "2");
+//				DisplayUtils.show(Common.toQ(from), null, true, "1");
+//				DisplayUtils.show(Common.toQ(to), null, true, "2");
 			}
 		}
 	}
