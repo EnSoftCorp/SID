@@ -26,9 +26,8 @@ import com.ensoftcorp.atlas.core.query.Q;
 import com.ensoftcorp.atlas.core.script.Common;
 import com.ensoftcorp.atlas.core.script.StyledResult;
 import com.ensoftcorp.atlas.core.xcsg.XCSG;
-import com.ensoftcorp.open.commons.algorithms.JGraphTAdapter;
+import com.ensoftcorp.open.commons.algorithms.StronglyConnectedComponents;
 import com.ensoftcorp.open.commons.analysis.StandardQueries;
-import com.ensoftcorp.open.commons.utilities.DisplayUtils;
 import com.ensoftcorp.open.jimple.commons.loops.DecompiledLoopIdentification.CFGNode;
 import com.ensoftcorp.open.sid.log.Log;
 
@@ -428,10 +427,10 @@ public class LoopCallGraph {
 	// jgrapht library version
 	public static Q getRecursiveMethods(){
 		Q callEdges = Common.universe().edgesTaggedWithAny(XCSG.Call).retainEdges();
-		JGraphTAdapter jgraphtAdapter = new JGraphTAdapter(callEdges.eval().nodes(), callEdges.eval().edges());
+		StronglyConnectedComponents adapter = new StronglyConnectedComponents(callEdges.eval().nodes(), callEdges.eval().edges());
 		AtlasSet<Node> recursionNodes = new AtlasHashSet<Node>();
 		AtlasSet<Edge> recursionEdges = new AtlasHashSet<Edge>();
-		for(AtlasSet<Node> scc : jgraphtAdapter.findSCCs()){
+		for(AtlasSet<Node> scc : adapter.findSCCs()){
 			Q recursion = Common.toQ(scc).induce(callEdges);
 			Graph recursionGraph = recursion.eval();
 			if(recursionGraph.edges().size() > 0){
