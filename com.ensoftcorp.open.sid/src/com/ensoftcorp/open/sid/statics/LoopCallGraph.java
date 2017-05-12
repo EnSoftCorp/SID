@@ -27,7 +27,7 @@ import com.ensoftcorp.atlas.core.script.Common;
 import com.ensoftcorp.atlas.core.script.StyledResult;
 import com.ensoftcorp.atlas.core.xcsg.XCSG;
 import com.ensoftcorp.open.commons.algorithms.StronglyConnectedComponents;
-import com.ensoftcorp.open.commons.analysis.StandardQueries;
+import com.ensoftcorp.open.commons.analysis.CommonQueries;
 import com.ensoftcorp.open.jimple.commons.loops.DecompiledLoopIdentification.CFGNode;
 import com.ensoftcorp.open.sid.log.Log;
 
@@ -91,7 +91,7 @@ public class LoopCallGraph {
 		//Iterate through the looping CFG nodes and compute the call graph for the methods called from within loops
 		for(GraphElement cfgNode : loopingCFGNodes.eval().nodes()){
 			// Get the methods containing the current cfgNode
-			Q caller = StandardQueries.getContainingFunctions(toQ(cfgNode));
+			Q caller = CommonQueries.getContainingFunctions(toQ(cfgNode));
 			
 			// Get the call site contained within the cfgNode
 			AtlasSet<Node> loopingCallsites = toQ(cfgNode).children().nodesTaggedWithAll(XCSG.CallSite).eval().nodes();
@@ -144,7 +144,7 @@ public class LoopCallGraph {
 		///Iterate through the looping CFG nodes and compute the call graph for the methods called from within loops 
 		for(GraphElement cfgNode : loopingCFGNodes.eval().nodes()){
 			// Get the methods containing the current cfgNode
-			Q caller = StandardQueries.getContainingFunctions(toQ(cfgNode));
+			Q caller = CommonQueries.getContainingFunctions(toQ(cfgNode));
 			
 			// Get the call sites containing within the cfgNode
 			Q loopingCallsites = toQ(cfgNode).children().nodesTaggedWithAll(XCSG.CallSite);
@@ -295,7 +295,7 @@ public class LoopCallGraph {
 		
 		// Iterate through the looping CFG nodes and add the NESTING_DEPTH attribute
 		for(GraphElement node : nodes){
-			Q loopHeaders = getLoopHeadersForMethod(StandardQueries.getContainingFunctions(toQ(node)));
+			Q loopHeaders = getLoopHeadersForMethod(CommonQueries.getContainingFunctions(toQ(node)));
 			int depth = calculateIntraproceduralLoopNestingDepth(node, 0, loopHeaders);
 			node.putAttr(NESTING_DEPTH, depth);
 		}
@@ -310,7 +310,7 @@ public class LoopCallGraph {
 		Q loopHeaders = universe().nodesTaggedWithAll(CFGNode.LOOP_HEADER);
 		Q nestedLoopHeaders = Common.empty();
 		for(GraphElement header : loopHeaders.eval().nodes()){
-			Q method = StandardQueries.getContainingFunctions(toQ(header));
+			Q method = CommonQueries.getContainingFunctions(toQ(header));
 			Q headersInMethods = getLoopHeadersForMethod(method);
 			int depth = calculateIntraproceduralLoopNestingDepth(header, 1, headersInMethods);
 			if(depth > 0){
@@ -352,7 +352,7 @@ public class LoopCallGraph {
 	 */
 	public static Q getMethodsContainingLoops(){
 		Q headers = Common.universe().nodesTaggedWithAny(CFGNode.LOOP_HEADER);
-		Q loopingMethods = StandardQueries.getContainingFunctions(headers);
+		Q loopingMethods = CommonQueries.getContainingFunctions(headers);
 		return loopingMethods;
 	}
 	
@@ -398,7 +398,7 @@ public class LoopCallGraph {
 		//Iterate through the looping CFG nodes and compute the call graph for the methods called from within loops
 		for(GraphElement cfgNode : loopingCFGNodes.eval().nodes()){
 			// Get the methods containing the current cfgNode
-			Q caller = StandardQueries.getContainingFunctions(toQ(cfgNode));
+			Q caller = CommonQueries.getContainingFunctions(toQ(cfgNode));
 			
 			// Get the call sites containing within the cfgNode
 			Q loopingCallsites = toQ(cfgNode).children().nodesTaggedWithAll(XCSG.CallSite);

@@ -19,7 +19,7 @@ import com.ensoftcorp.atlas.core.db.graph.Node;
 import com.ensoftcorp.atlas.core.query.Q;
 import com.ensoftcorp.atlas.core.script.Common;
 import com.ensoftcorp.atlas.core.xcsg.XCSG;
-import com.ensoftcorp.open.commons.analysis.StandardQueries;
+import com.ensoftcorp.open.commons.analysis.CommonQueries;
 import com.ensoftcorp.open.jimple.commons.loops.DecompiledLoopIdentification.CFGNode;
 import com.ensoftcorp.open.sid.dynamic.instruments.Instrument;
 import com.ensoftcorp.open.sid.dynamic.instruments.counters.LoopIterationCounter;
@@ -92,7 +92,7 @@ public class Instrumentation {
 				counterInstrument.performInstrumentation();
 				Instrument timerInstrument = new LoopIterationTimer(project, loopHeader);
 				timerInstrument.performInstrumentation();
-				GraphElement method = StandardQueries.getContainingFunction(loopHeader);
+				GraphElement method = CommonQueries.getContainingFunction(loopHeader);
 				if(result.containsKey(method)){
 					LinkedList<Instrument> instruments = result.get(method);
 					instruments.add(counterInstrument);
