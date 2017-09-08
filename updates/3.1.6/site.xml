@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/com.ensoftcorp.open.sid.feature_3.1.6.201709081600.jar" id="com.ensoftcorp.open.sid.feature" version="3.1.6.201709081600">
+      <category name="com.ensoftcorp.open.sid.category"/>
+   </feature>
+   <category-def name="com.ensoftcorp.open.sid.category" label="SID Toolbox">
+      <description>
+         The SID Analysis Toolbox project provides statically-informed dynamic (SID) analysis capabilities to the Atlas program analysis framework.
+      </description>
+   </category-def>
+</site>
