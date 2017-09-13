@@ -2,39 +2,39 @@
 <?eclipse version="3.4"?>
 <plugin>
     <extension point="org.eclipse.ui.handlers">
-		<handler commandId="sid.dynamic.cloneProjectCommand"
-				 class="sid.handlers.CloneProjectHandler">
+		<handler commandId="com.ensoftcorp.open.sid.dynamic.cloneProjectCommand"
+				 class="com.ensoftcorp.open.sid.handlers.CloneProjectHandler">
 		</handler>
-		<handler commandId="sid.dynamic.instrumentAllLoopHeadersCommand"
-				 class="sid.handlers.InstrumentAllLoopHeadersProjectHandler">
+		<handler commandId="com.ensoftcorp.open.sid.dynamic.instrumentAllLoopHeadersCommand"
+				 class="com.ensoftcorp.open.sid.handlers.InstrumentAllLoopHeadersProjectHandler">
 		</handler>
-		<handler commandId="sid.dynamic.createDriverProjectCommand"
-				 class="sid.handlers.CreateDriverProjectHandler">
+		<handler commandId="com.ensoftcorp.open.sid.dynamic.createDriverProjectCommand"
+				 class="com.ensoftcorp.open.sid.handlers.CreateDriverProjectHandler">
 		</handler>
-		<handler commandId="sid.dynamic.createMethodDriverProjectCommand"
-				 class="sid.handlers.CreateMethodDriverProjectHandler">
+		<handler commandId="com.ensoftcorp.open.sid.dynamic.createMethodDriverProjectCommand"
+				 class="com.ensoftcorp.open.sid.handlers.CreateMethodDriverProjectHandler">
 		</handler>
 	</extension>
 	
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:org.eclipse.jdt.ui.PackageExplorer?after=additions">
-			<menu id="sid.dynamic.explorer.menu" 
+			<menu id="com.ensoftcorp.open.sid.dynamic.explorer.menu" 
 				  label="SID" />
 		</menuContribution>
-		<menuContribution locationURI="popup:sid.dynamic.explorer.menu?after=additions">
-			<command commandId="sid.dynamic.cloneProjectCommand" 
+		<menuContribution locationURI="popup:com.ensoftcorp.open.sid.dynamic.explorer.menu?after=additions">
+			<command commandId="com.ensoftcorp.open.sid.dynamic.cloneProjectCommand" 
 					 icon="icons/clone.png" 
 					 label="Clone Project (with instruments)" 
 					 style="push" />
 		</menuContribution>
-		<menuContribution locationURI="popup:sid.dynamic.explorer.menu?after=additions">
-			<command commandId="sid.dynamic.instrumentAllLoopHeadersCommand" 
+		<menuContribution locationURI="popup:com.ensoftcorp.open.sid.dynamic.explorer.menu?after=additions">
+			<command commandId="com.ensoftcorp.open.sid.dynamic.instrumentAllLoopHeadersCommand" 
 					 icon="icons/gears.png" 
 					 label="Instrument All Loop Headers" 
 					 style="push" />
 		</menuContribution>
-		<menuContribution locationURI="popup:sid.dynamic.explorer.menu?after=additions">
-			<command commandId="sid.dynamic.createDriverProjectCommand" 
+		<menuContribution locationURI="popup:com.ensoftcorp.open.sid.dynamic.explorer.menu?after=additions">
+			<command commandId="com.ensoftcorp.open.sid.dynamic.createDriverProjectCommand" 
 					 icon="icons/gears.png" 
 					 label="Create Driver Project" 
 					 style="push" />
@@ -43,11 +43,11 @@
 	
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:#TextEditorContext?after=additions">
-			<menu id="sid.dynamic.editor.menu" 
+			<menu id="com.ensoftcorp.open.sid.dynamic.editor.menu" 
 				  label="SID" />
 		</menuContribution>
-		<menuContribution locationURI="popup:sid.dynamic.editor.menu?after=additions">
-			<command commandId="sid.dynamic.createMethodDriverProjectCommand" 
+		<menuContribution locationURI="popup:com.ensoftcorp.open.sid.dynamic.editor.menu?after=additions">
+			<command commandId="com.ensoftcorp.open.sid.dynamic.createMethodDriverProjectCommand" 
 					 icon="icons/gears.png" 
 					 label="Instrument + Create Method Driver Project" 
 					 style="push" />
@@ -59,7 +59,7 @@
 	<extension
          point="com.ensoftcorp.atlas.ui.smartViewScript">
       <script
-            class="com.ensoftcorp.open.sid.ui.smart.LoopCallGraphSmartView">
+            class="com.ensoftcorp.open.com.ensoftcorp.open.sid.ui.smart.LoopCallGraphSmartView">
       </script>
    </extension>
    -->

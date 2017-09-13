@@ -134,21 +134,23 @@ public class Instrumentation {
 		for (int i = 0; i < paths.length; i++){
 			folders[i] = paths[i].split(delimeter);
 		}
-		for (int j = 0; j < folders[0].length; j++){
-			String thisFolder = folders[0][j];
-			boolean allMatched = true;
-			for (int i = 1; i < folders.length && allMatched; i++){
-				if (folders[i].length < j){
-					allMatched = false;
+		if(folders.length > 0){
+			for (int j = 0; j < folders[0].length; j++){
+				String thisFolder = folders[0][j];
+				boolean allMatched = true;
+				for (int i = 1; i < folders.length && allMatched; i++){
+					if (folders[i].length < j){
+						allMatched = false;
+						break;
+					}
+					// otherwise
+					allMatched &= folders[i][j].equals(thisFolder);
+				}
+				if (allMatched){
+					commonPath += thisFolder + File.separatorChar;
+				} else {
 					break;
 				}
-				// otherwise
-				allMatched &= folders[i][j].equals(thisFolder);
-			}
-			if (allMatched){
-				commonPath += thisFolder + File.separatorChar;
-			} else {
-				break;
 			}
 		}
 		return new File(commonPath);
