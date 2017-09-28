@@ -9,7 +9,10 @@ import com.ensoftcorp.atlas.core.script.FrontierStyledResult;
 import com.ensoftcorp.atlas.core.script.StyledResult;
 import com.ensoftcorp.atlas.core.xcsg.XCSG;
 import com.ensoftcorp.atlas.ui.scripts.selections.FilteringAtlasSmartViewScript;
+import com.ensoftcorp.atlas.ui.scripts.selections.IExplorableScript;
 import com.ensoftcorp.atlas.ui.scripts.selections.IResizableScript;
+import com.ensoftcorp.atlas.ui.scripts.util.SimpleScriptUtil;
+import com.ensoftcorp.atlas.ui.selection.event.FrontierEdgeExploreEvent;
 import com.ensoftcorp.atlas.ui.selection.event.IAtlasSelectionEvent;
 import com.ensoftcorp.open.commons.analysis.CommonQueries;
 import com.ensoftcorp.open.sid.statics.LoopCallGraph;
@@ -30,7 +33,7 @@ import com.ensoftcorp.open.sid.statics.LoopCallGraph;
  * * Call edges which may have been from a CallSite within a loop == ORANGE
  *
  */
-public class LoopCallGraphSmartView extends FilteringAtlasSmartViewScript implements IResizableScript{
+public class LoopCallGraphSmartView extends FilteringAtlasSmartViewScript implements IResizableScript, IExplorableScript {
 	
 	@Override
 	protected String[] getSupportedNodeTags() {
@@ -57,6 +60,11 @@ public class LoopCallGraphSmartView extends FilteringAtlasSmartViewScript implem
 		return 1;
 	}
 
+	@Override
+	public FrontierStyledResult explore(FrontierEdgeExploreEvent event, FrontierStyledResult oldResult) {
+		return SimpleScriptUtil.explore(this, event, oldResult);
+	}
+	
 	@Override
 	public FrontierStyledResult evaluate(IAtlasSelectionEvent event, int reverse, int forward) {
 		
