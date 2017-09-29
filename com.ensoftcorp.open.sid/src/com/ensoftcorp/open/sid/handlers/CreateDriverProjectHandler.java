@@ -40,8 +40,8 @@ import com.ensoftcorp.atlas.core.script.Common;
 import com.ensoftcorp.atlas.core.xcsg.XCSG;
 import com.ensoftcorp.open.commons.utilities.DisplayUtils;
 import com.ensoftcorp.open.java.commons.analyzers.JavaProgramEntryPoints;
+import com.ensoftcorp.open.jimple.commons.transform.Compilation;
 import com.ensoftcorp.open.sid.dynamic.phases.Cloning;
-import com.ensoftcorp.open.sid.dynamic.phases.Compilation;
 import com.ensoftcorp.open.sid.dynamic.phases.Instrumentation;
 import com.ensoftcorp.open.sid.dynamic.phases.Setup;
 
@@ -86,7 +86,7 @@ public class CreateDriverProjectHandler extends AbstractHandler {
 					File projectDirectory = project.getLocation().toFile().getCanonicalFile();
 					File jimpleDirectory = Instrumentation.getJimpleDirectory(projectDirectory);
 					IFolder jimpleFolder = project.getFolder(projectDirectory.toURI().relativize(new File(jimpleDirectory.getCanonicalPath()).toURI()).getPath());
-					Compilation.compile(project, jimpleFolder, instrumentedBytecode);
+					Compilation.compile(project, jimpleFolder.getLocation().toFile(), instrumentedBytecode);
 				} catch (Throwable t){
 					DisplayUtils.showError(t, "Error compiling Jimple in \"" + project.getName() + "\".");
 					return null;

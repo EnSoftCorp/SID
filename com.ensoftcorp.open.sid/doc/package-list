@@ -1,0 +1,10 @@
+com.ensoftcorp.open.sid
+com.ensoftcorp.open.sid.dynamic.instruments
+com.ensoftcorp.open.sid.dynamic.instruments.counters
+com.ensoftcorp.open.sid.dynamic.instruments.timers
+com.ensoftcorp.open.sid.dynamic.phases
+com.ensoftcorp.open.sid.handlers
+com.ensoftcorp.open.sid.log
+com.ensoftcorp.open.sid.setup
+com.ensoftcorp.open.sid.statics
+com.ensoftcorp.open.sid.ui.smart
