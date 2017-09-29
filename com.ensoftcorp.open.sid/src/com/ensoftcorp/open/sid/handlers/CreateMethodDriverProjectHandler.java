@@ -48,9 +48,9 @@ import com.ensoftcorp.atlas.ui.selection.SelectionUtil;
 import com.ensoftcorp.atlas.ui.selection.event.IAtlasSelectionEvent;
 import com.ensoftcorp.open.commons.utilities.DisplayUtils;
 import com.ensoftcorp.open.java.commons.analyzers.JavaProgramEntryPoints;
+import com.ensoftcorp.open.jimple.commons.transform.Compilation;
 import com.ensoftcorp.open.sid.dynamic.instruments.Instrument;
 import com.ensoftcorp.open.sid.dynamic.phases.Cloning;
-import com.ensoftcorp.open.sid.dynamic.phases.Compilation;
 import com.ensoftcorp.open.sid.dynamic.phases.Instrumentation;
 import com.ensoftcorp.open.sid.dynamic.phases.Setup;
 import com.ensoftcorp.open.sid.statics.LoopCallGraph;
@@ -131,7 +131,7 @@ public class CreateMethodDriverProjectHandler extends AbstractHandler {
 				File projectDirectory = cloneProject.getLocation().toFile().getCanonicalFile();
 				File jimpleDirectory = Instrumentation.getJimpleDirectory(projectDirectory);
 				IFolder jimpleFolder = cloneProject.getFolder(projectDirectory.toURI().relativize(new File(jimpleDirectory.getCanonicalPath()).toURI()).getPath());
-				Compilation.compile(cloneProject, jimpleFolder, instrumentedBytecode);
+				Compilation.compile(cloneProject, jimpleFolder.getLocation().toFile(), instrumentedBytecode);
 			} catch (Throwable t){
 				DisplayUtils.showError(t, "Error compiling Jimple in \"" + cloneProject.getName() + "\".");
 				return null;
