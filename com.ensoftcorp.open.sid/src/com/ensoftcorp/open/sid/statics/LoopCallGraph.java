@@ -211,7 +211,7 @@ public class LoopCallGraph {
 				
 				// Iterate through the looping CFG nodes and compute the maximum nesting depth
 				for(GraphElement cfgCallsite : loopingCFGNodes.eval().nodes()){
-					int intraprocedural_depth = (int)cfgCallsite.getAttr(NESTING_DEPTH);
+					int intraprocedural_depth = Integer.parseInt((String)cfgCallsite.getAttr(NESTING_DEPTH));
 					iDepths.add(intraprocedural_depth);
 				}
 				depth_new += Collections.max(iDepths);
@@ -297,7 +297,7 @@ public class LoopCallGraph {
 		for(GraphElement node : nodes){
 			Q loopHeaders = getLoopHeadersForMethod(CommonQueries.getContainingFunctions(toQ(node)));
 			int depth = calculateIntraproceduralLoopNestingDepth(node, 0, loopHeaders);
-			node.putAttr(NESTING_DEPTH, depth);
+			node.putAttr(NESTING_DEPTH, depth+"");
 		}
 		return loopingCFGNodes;
 	}
@@ -330,7 +330,7 @@ public class LoopCallGraph {
 	 */
 	public int calculateIntraproceduralLoopNestingDepth(GraphElement ge, int depth, Q loopHeaders){
 		if(ge.hasAttr(CFGNode.LOOP_MEMBER_ID)){
-			int loopHeaderId = (int)ge.getAttr(CFGNode.LOOP_MEMBER_ID);
+			Object loopHeaderId = ge.getAttr(CFGNode.LOOP_MEMBER_ID);
 			GraphElement loopHeader = loopHeaders.selectNode(CFGNode.LOOP_HEADER_ID, loopHeaderId).eval().nodes().getFirst();
 			depth = ge.taggedWith(CFGNode.LOOP_HEADER) ? ++depth : depth;
 			return calculateIntraproceduralLoopNestingDepth(loopHeader, depth, loopHeaders);
