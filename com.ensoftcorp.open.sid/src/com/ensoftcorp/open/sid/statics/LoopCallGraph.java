@@ -297,7 +297,7 @@ public class LoopCallGraph {
 		for(GraphElement node : nodes){
 			Q loopHeaders = getLoopHeadersForMethod(CommonQueries.getContainingFunctions(toQ(node)));
 			int depth = calculateIntraproceduralLoopNestingDepth(node, 0, loopHeaders);
-			node.putAttr(NESTING_DEPTH, depth+"");
+			node.putAttr(NESTING_DEPTH, Integer.toString(depth));
 		}
 		return loopingCFGNodes;
 	}
