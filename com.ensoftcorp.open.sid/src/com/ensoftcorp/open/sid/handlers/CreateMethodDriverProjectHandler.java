@@ -55,6 +55,8 @@ import com.ensoftcorp.open.sid.dynamic.phases.Instrumentation;
 import com.ensoftcorp.open.sid.dynamic.phases.Setup;
 import com.ensoftcorp.open.sid.statics.LoopCallGraph;
 
+import soot.Transform;
+
 public class CreateMethodDriverProjectHandler extends AbstractHandler {
 	public CreateMethodDriverProjectHandler() {
 	}
@@ -131,7 +133,7 @@ public class CreateMethodDriverProjectHandler extends AbstractHandler {
 				File projectDirectory = cloneProject.getLocation().toFile().getCanonicalFile();
 				File jimpleDirectory = Instrumentation.getJimpleDirectory(projectDirectory);
 				IFolder jimpleFolder = cloneProject.getFolder(projectDirectory.toURI().relativize(new File(jimpleDirectory.getCanonicalPath()).toURI()).getPath());
-				Compilation.compile(cloneProject, jimpleFolder.getLocation().toFile(), instrumentedBytecode);
+				Compilation.compile(cloneProject, jimpleFolder.getLocation().toFile(), instrumentedBytecode, false, new LinkedList<File>(), true, new Transform[]{});	
 			} catch (Throwable t){
 				DisplayUtils.showError(t, "Error compiling Jimple in \"" + cloneProject.getName() + "\".");
 				return null;

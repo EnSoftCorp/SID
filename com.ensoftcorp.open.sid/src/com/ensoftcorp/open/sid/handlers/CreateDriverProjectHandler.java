@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -44,6 +45,8 @@ import com.ensoftcorp.open.jimple.commons.transform.Compilation;
 import com.ensoftcorp.open.sid.dynamic.phases.Cloning;
 import com.ensoftcorp.open.sid.dynamic.phases.Instrumentation;
 import com.ensoftcorp.open.sid.dynamic.phases.Setup;
+
+import soot.Transform;
 
 public class CreateDriverProjectHandler extends AbstractHandler {
 	public CreateDriverProjectHandler() {}
@@ -86,7 +89,7 @@ public class CreateDriverProjectHandler extends AbstractHandler {
 					File projectDirectory = project.getLocation().toFile().getCanonicalFile();
 					File jimpleDirectory = Instrumentation.getJimpleDirectory(projectDirectory);
 					IFolder jimpleFolder = project.getFolder(projectDirectory.toURI().relativize(new File(jimpleDirectory.getCanonicalPath()).toURI()).getPath());
-					Compilation.compile(project, jimpleFolder.getLocation().toFile(), instrumentedBytecode);
+					Compilation.compile(project, jimpleFolder.getLocation().toFile(), instrumentedBytecode, false, new LinkedList<File>(), true, new Transform[]{});
 				} catch (Throwable t){
 					DisplayUtils.showError(t, "Error compiling Jimple in \"" + project.getName() + "\".");
 					return null;
